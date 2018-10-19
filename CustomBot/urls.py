@@ -19,5 +19,6 @@ from admin_panel import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'index/', views.index, name='index')
+    url(r'index/', views.index, name='index'),
+    url(r'filters/', views.filters, name='filters')
 ]
