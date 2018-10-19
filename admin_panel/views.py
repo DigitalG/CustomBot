@@ -7,4 +7,12 @@ def index(request):
 
 
 def filters(request):
-    return render(request, 'filters_page.html')
+    ctx = {}
+    return render(request, 'filters_page.html', ctx)
+
+
+def create_filter(request):
+    ctx = {}
+
+
+    return render(request, 'create_filter.html', ctx)

@@ -20,5 +20,6 @@ from admin_panel import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'index/', views.index, name='index'),
-    url(r'filters/', views.filters, name='filters')
+    url(r'filters/', views.filters, name='filters'),
+    url(r'create_filter', views.create_filter, name='create_filter')
 ]

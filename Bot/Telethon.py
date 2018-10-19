@@ -4,8 +4,8 @@ import asyncio
 # These example values won't work. You must get your own api_id and
 # api_hash from https://my.telegram.org, under API Development.
 lines = []
-with f as open('info.txt'):
-    lines = f.readlines()
+f = open('info.txt')
+lines = f.readlines()
 api_id = int(lines[0])
 api_hash = lines[1]
 
