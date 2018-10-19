@@ -12,19 +12,15 @@
 <div class="container">
     <div class="col-3"></div>
     <div class="">
-        <h1>Filters</h1><a href="/create_filter/" class="btn btn-dark mb-2">Create New filter</a>
+        <h1>Filters</h1><a href="/add_channel/" class="btn btn-dark mb-2">Add new channel</a>
         <table class="table table-stripped">
             <tr class="bg-dark text-white">
-                <th class="">Input</th>
-                <th class="">Type</th>
-                <th class="">Output</th>
+                <th class="">Name</th>
                 <th class="">Delete</th>
             </tr>
-            {% for f in filters %}
+            {% for f in channels %}
                 <tr class="td-hl">
-                    <td class="">{{ f.input }}</td>
-                    <td class="">{{ f.type }}</td>
-                    <td class="">{{ f.output }}</td>
+                    <td class="">{{ f.name }}</td>
                     <td class="">
                         <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn btn-warning">
                             Delete
@@ -50,4 +46,4 @@
     }
 </script>
 </body>
-</html>.
+</html>
