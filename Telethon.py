@@ -66,9 +66,22 @@ async def my_event_handler(event):
     filters = Channel.objects.filter(key=create_dictionary()[id]).filters
     print(filters)
     await client.send_message('Korb1t', 'lul')
+print(parse_channels_names())
+
+
+
+
+@client.on(events.NewMessage(chats=['DigitalG', 'Korb1t']))
+def my_event_handler(event):
+    id = event.message.id
+    #filters =
+    print(Channel.objects.filter(key=create_dictionary()[id]).filters)
+    if '' in event.raw_text:
+        client.send_message('DigitalG', 'kughu')
 
 
 client.start()
+print(create_dictionary())
 client.run_until_disconnected()
 
 '''dialogs = client.get_dialogs('t.me/vape_baraholkaua')
