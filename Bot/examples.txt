@@ -1,0 +1,30 @@
+Replace Example:
+
+*Forwarding Message : Apple has created a new phone!
+
+*Bot Settings : Replace Apple with #apple
+
+Bot Forwards Message : #apple has created a new phone!
+
+———————————————————
+
+Remove Example:
+
+*Forwarding Message : Apple has created a new phone!
+
+*Bot Settings : Remove phone
+
+Bot Forwards Message: Apple has created a new!
+
+———————————————————
+
+Add Word / Phase Below Message Example:
+
+*Forwarding Message: Apple has created a new phone!
+
+*Bot Settings: If Apple add #apple #iphone
+
+Bot Forwards Message:
+
+Apple has created a new phone!
+#apple #iphone

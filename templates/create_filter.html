@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="container">
+    <div class="col-3"></div>
+    <div>
+        <h1>Create new filter</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group" id="form">
+                <label for="InputName">Input</label>
+                <input type="text" name="Input" class="form-control" id="Input" placeholder="Enter input" required>
+                <br>
+                <label for="FilterType">Filter Type</label>
+                <select class="form-control" name="Type" id="Type">
+                    <option>Replace</option>
+                    <option>Add Below</option>
+                    <option>Remove</option>
+                </select>
+                <br>
+                <label for="Output">Output</label>
+                <input type="text" name="Output" class="form-control" id="Output" placeholder="Output">
+                <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton1" name="SubmitToIndex">Submit
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col-3"></div>
+</div>
+</body>
+</html>

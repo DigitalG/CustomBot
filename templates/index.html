@@ -1,8 +1,10 @@
+{% load static %}
 <html>
 <head>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 </head>
-
 <body>
-<h1>index.html</h1>
+{% include "navbar.html" %}
 </body>
 </html>

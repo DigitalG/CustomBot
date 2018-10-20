@@ -19,5 +19,9 @@ from admin_panel import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'index/', views.index, name='index')
+    url(r'index/', views.index, name='index'),
+    url(r'filters/', views.filters, name='filters'),
+    url(r'create_filter', views.create_filter, name='create_filter'),
+    url(r'add_channel', views.add_channel, name='add_channel'),
+    url(r'channels_list', views.channels_list, name='channel_list')
 ]

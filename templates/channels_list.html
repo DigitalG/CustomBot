@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="container">
+    <div class="col-3"></div>
+    <div class="">
+        <h1>Filters</h1><a href="/add_channel/" class="btn btn-dark mb-2">Add new channel</a>
+        <table class="table table-stripped">
+            <tr class="bg-dark text-white">
+                <th class="">Name</th>
+                <th class="">Delete</th>
+            </tr>
+            {% for f in channels %}
+                <tr class="td-hl">
+                    <td class="">{{ f.name }}</td>
+                    <td class="">
+                        <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn btn-warning">
+                            Delete
+                        </button>
+                        <form method="post" id="DeleteForm{{ f.id }}" hidden>
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ f.id }}" name="ChannelId">
+                            <button id="SureButton{{ f.id }}" class="btn btn-danger">Are you sure?</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-3"></div>
+</div>
+<script>
+    function OnDelete(id) {
+        var old = document.getElementById("DeleteButton" + String(id))
+        var newb = document.getElementById("DeleteForm" + String(id))
+        old.hidden = true
+        newb.hidden = false
+    }
+</script>
+</body>
+</html>
