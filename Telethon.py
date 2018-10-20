@@ -1,4 +1,4 @@
-from telethon import TelegramClient, events, sync
+from telethon import TelegramClient, events, sync, client
 import asyncio
 import random
 import os
@@ -19,6 +19,15 @@ api_hash = lines[1]
 
 client = TelegramClient('session_name', api_id, api_hash)
 
+client.start()
+
+# for dialog in client.get_dialogs(limit=2):
+#     for message in client.iter_messages(dialog, limit=1):
+#         print(dialog.name, ' text= ' + message.text)
+
+
+# dialogs = client.get_dialogs('t.me/vape_baraholkaua')
+# client.send_message('Korbit',[dialogs])
 
 # print(client.get_me().stringify())
 
@@ -31,17 +40,20 @@ client = TelegramClient('session_name', api_id, api_hash)
 # async def handler(event):
 #     await event.respond('Hey!')
 
-# @client.on(events.NewMessage)
-# async def my_event_handler(event):
-#     if '%' in event.raw_text:
-#         await event.reply('я правий')
+@client.on(events.NewMessage)
+async def my_event_handler(event):
+    if 'бля' in event.raw_text:
+        await print(event.message)
 
-
-client.start()
-
-list = ['хуй','пизда','жопа','соски','ебать ты лох','мразь','нахуй иди']
-while True:
-    client.send_message('DigitalG',random.choice(list))
 
 client.start()
 client.run_until_disconnected()
+
+# client.start()
+#
+# list = ['хуй','пизда','жопа','соски','ебать ты лох','мразь','нахуй иди']
+# while True:
+#     client.send_message('DigitalG',random.choice(list))
+#
+# client.start()
+# client.run_until_disconnected()
