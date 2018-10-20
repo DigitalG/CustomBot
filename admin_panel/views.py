@@ -25,7 +25,7 @@ def create_filter(request):
         new_input = request.POST['Input']
         new_type = request.POST['Type']
         new_output = request.POST['Output']
-        new_name = ''
+        #new_name = ''
         if new_type == 'Replace':
             new_name = 'Replace {} with {}'.format(new_input, new_output)
         else:

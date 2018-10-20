@@ -3,17 +3,16 @@ from telebot.types import Message
 import telebot
 from django.db import models
 import os
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CustomBot.settings")
 from .admin_panel.models import *
-
-
-
 
 t = open('token.txt', 'r')
 TOKEN = t.readline()
 t.close()
 
 bot = telebot.TeleBot(TOKEN)
+
 
 def applyFilter(filter: Filter, str):
     if filter.type == 'Replace':
@@ -63,9 +62,9 @@ def add_tags(message):
     answer = message.text
     filters = Filter.objects.all()
     for f in filters:
-        answer = applyFilter(answer,f)
+        answer = applyFilter(answer, f)
 
-    bot.send_message(message.chat.id,answer)
+    bot.send_message(message.chat.id, answer)
 
 
 bot.polling()

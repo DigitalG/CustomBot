@@ -21,7 +21,6 @@ client = TelegramClient('session_name', api_id, api_hash)
 
 
 
-
 def applyFilter(str, channel):
     result = str
     for f in channel.filters:
@@ -34,15 +33,24 @@ def applyFilter(str, channel):
 
     return result
 
-# for dialog in client.get_dialogs(limit=2):
-#     for message in client.iter_messages(dialog, limit=1):
-#         print(dialog.name, ' text= ' + message.text)
+
+def create_dictionary():
+    res = []
+    tmp = None
+    channels = Channel.objects.all()
+    for c in channels:
+        tmp = {c.key :client.get_entity(c.key).id}
+        res.append(tmp)
+
+    return res
+
 def parse_channels():
     channels = Channel.objects.all()
     res = []
     for c in channels:
         res.append(client.get_entity(c.key))
     return res
+
 
 def parse_channels_names():
     channels = Channel.objects.all()
@@ -51,10 +59,13 @@ def parse_channels_names():
         res.append(c.key)
     return res
 
-@client.on(events.NewMessage)
+
+@client.on(events.NewMessage(chats=parse_channels_names()))
 async def my_event_handler(event):
-    if '' in event.raw_text:
-        await client.send_message('Korb1t', applyFilter(event.raw_text,))
+    id = event.message.id
+    filters = Channel.objects.filter(key=create_dictionary()[id]).filters
+    print(filters)
+    await client.send_message('Korb1t', 'lul')
 
 
 client.start()
@@ -68,6 +79,9 @@ print(client.get_me().stringify())
 client.send_message('vasylmartyniv', 'Hello! Talking to you from Telethon')
 client.send_file('username', '/home/myself/Pictures/holidays.jpg')
 
+for dialog in client.get_dialogs(limit=2):
+    for message in client.iter_messages(dialog, limit=1):
+        print(dialog.name, ' text= ' + message.text)
 
 #client.get_input_message('DigitalG')
 @client.on(events.NewMessage(pattern='(?i)hi|hello'))
