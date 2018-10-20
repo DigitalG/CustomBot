@@ -19,41 +19,65 @@ api_hash = lines[1]
 
 client = TelegramClient('session_name', api_id, api_hash)
 
-client.start()
+
+
+
+def applyFilter(str, channel):
+    result = str
+    for f in channel.filters:
+        if filter.type == 'Replace':
+            result = result.replace(filter.input, filter.output)
+        elif filter.type == 'Add Below':
+            result = result + '\n\n' + filter.input
+        elif filter.type == 'Remove':
+            result = result.replace(filter.input, '')
+
+    return result
 
 # for dialog in client.get_dialogs(limit=2):
 #     for message in client.iter_messages(dialog, limit=1):
 #         print(dialog.name, ' text= ' + message.text)
+def parse_channels():
+    channels = Channel.objects.all()
+    res = []
+    for c in channels:
+        res.append(client.get_entity(c.key))
+    return res
 
-
-# dialogs = client.get_dialogs('t.me/vape_baraholkaua')
-# client.send_message('Korbit',[dialogs])
-
-# print(client.get_me().stringify())
-
-# client.send_message('vasylmartyniv', 'Hello! Talking to you from Telethon')
-# client.send_file('username', '/home/myself/Pictures/holidays.jpg')
-
-
-# #client.get_input_message('DigitalG')
-# @client.on(events.NewMessage(pattern='(?i)hi|hello'))
-# async def handler(event):
-#     await event.respond('Hey!')
+def parse_channels_names():
+    channels = Channel.objects.all()
+    res = []
+    for c in channels:
+        res.append(c.key)
+    return res
 
 @client.on(events.NewMessage)
 async def my_event_handler(event):
-    if 'бля' in event.raw_text:
-        await print(event.message)
+    if '' in event.raw_text:
+        await client.send_message('Korb1t', applyFilter(event.raw_text,))
 
 
 client.start()
 client.run_until_disconnected()
 
-# client.start()
-#
-# list = ['хуй','пизда','жопа','соски','ебать ты лох','мразь','нахуй иди']
-# while True:
-#     client.send_message('DigitalG',random.choice(list))
-#
-# client.start()
-# client.run_until_disconnected()
+'''dialogs = client.get_dialogs('t.me/vape_baraholkaua')
+client.send_message('Korbit',[dialogs])
+
+print(client.get_me().stringify())
+
+client.send_message('vasylmartyniv', 'Hello! Talking to you from Telethon')
+client.send_file('username', '/home/myself/Pictures/holidays.jpg')
+
+
+#client.get_input_message('DigitalG')
+@client.on(events.NewMessage(pattern='(?i)hi|hello'))
+async def handler(event):
+    await event.respond('Hey!')
+client.start()
+
+list = ['хуй','пизда','жопа','соски','ебать ты лох','мразь','нахуй иди']
+while True:
+    client.send_message('DigitalG',random.choice(list))
+
+client.start()
+client.run_until_disconnected()'''
