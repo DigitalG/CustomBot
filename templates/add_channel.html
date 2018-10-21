@@ -12,7 +12,7 @@
 <div class="container">
     <div class="col-3"></div>
     <div>
-        <h1>Create new filter</h1>
+        <h1>Add new channel</h1>
         <form method="post">
             {% csrf_token %}
             <div class="form-group" id="form">
@@ -23,14 +23,17 @@
                 <input type="text" name="Key" class="form-control" id="Key" placeholder="Key">
                 <small class="text-muted"> - It can be username, group name, id, invite link, etc.</small>
                 <br>
+                {% if filters|length %}
                 <label for="">Choose initial filters</label><br>
                 {% for f in filters %}
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="Check{{ f.id }}" value="Check{{ f.id }}" name="Check{{ f.id }}">
-                        <label class="form-check-label" for="Check{{ f.id }}">{{ f.name }}</label>
-                    </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="Check{{ f.id }}" value="Check{{ f.id }}"
+                           name="Check{{ f.id }}">
+                    <label class="form-check-label" for="Check{{ f.id }}">{{ f.name }}</label>
+                </div>
                 {% endfor %}
                 <br>
+                {% endif %}
                 <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton1" name="SubmitToIndex">Submit
                 </button>
             </div>

@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from .models import *
+from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.contrib import auth
+from django.contrib.auth import logout as django_logout
 
 
 # Create your views here.
@@ -52,10 +55,8 @@ def channels_list(request):
 
 def add_channel(request):
     filters = Filter.objects.all()
-    print(filters)
     ctx = {'filters': filters}
 
-    print(request.POST)
 
     if request.method == 'POST':
         new_name = request.POST['Name']
@@ -66,8 +67,36 @@ def add_channel(request):
         max = Filter.objects.all().order_by('-id')[0].id
         for i in range(min, max):
             if request.POST['Check' + str(i)]:
-                channel.filters.add(Filter.objects.filter(pk=i))
+                channel.filters.add(Filter.objects.filter(pk=i)[0])
 
         channel.save()
 
     return render(request, 'add_channel.html', ctx)
+
+
+def logout(request):
+    django_logout(request)
+    return HttpResponseRedirect('/index')
+
+
+def login(request):
+    """Shows a login form and a registration link."""
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = auth.authenticate(username=username, password=password)
+        if user is not None and user.is_active:
+            auth.login(request, user)
+            return HttpResponseRedirect("/index/")
+
+        else:
+            return HttpResponse("Invalid login. Please try again.")
+
+    # if not POST then return login form
+    return render(request, "login.html", {'next': ''})
+
+
+def user_settings(request):
+
+    return render(request, 'user_settings.html')

@@ -19,10 +19,21 @@ class Channel(models.Model):
     name = models.CharField(max_length=255)
     key = models.CharField(max_length=255)
     filters = models.ManyToManyField(Filter)
-    tele_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'Channel'
+
+    def __str__(self):
+        return (self.name)
+
+
+class Session(models.Model):
+    name = models.CharField(max_length=255)
+    number = models.IntegerField()
+    active = models.BooleanField()
+
+    class Meta:
+        db_table = 'Session'
 
     def __str__(self):
         return (self.name)
