@@ -47,7 +47,7 @@ def create_dictionary():
     tmp = None
     channels = Channel.objects.all()
     for c in channels:
-        tmp = {c.key: client.get_entity(c.key).id}
+        tmp = {client.get_entity(c.key).id: str(c.key)}
         res.append(tmp)
 
     return res
@@ -68,9 +68,10 @@ def parse_channels_names():
         res.append(c.key)
     return res
 
-def get_filters(id):
-    return Channel.objects.filter(key=create_dictionary()[id])[0].filter
 
+def get_filters(id):
+    id = str(id)
+    return Channel.objects.filter(key=create_dictionary()[id])[0].filter
 
 
 @bot.message_handler(func=lambda m: True)
@@ -80,13 +81,14 @@ async def my_event_handler(event):
         id = event.message.from_id
     else:
         id = event.message.to_id.channel_id
+    # get_filters(id)
+    # print(get_filters(id))
+    # print(event.message.to_id.user_id)
     print(event)
-    #print(get_filters(id))
-    await bot.send_message(id, event.message.text)
+    await bot.send_message(event.message.to_id.user_id, event.message.text)
 
 
 print(parse_channels_names())
-
 
 # @client.on(events.NewMessage(chats=['DigitalG', 'Korb1t']))
 # def my_event_handler(event):
@@ -98,6 +100,7 @@ print(parse_channels_names())
 
 
 client.start()
+print(create_dictionary())
 client.run_until_disconnected()
 
 '''dialogs = client.get_dialogs('t.me/vape_baraholkaua')
