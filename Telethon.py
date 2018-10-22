@@ -2,6 +2,9 @@ from telethon import TelegramClient, events, sync, client
 import asyncio
 import random
 import os
+from telebot import types
+from telebot.types import Message
+import telebot
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CustomBot.settings")
 import django
@@ -11,6 +14,12 @@ from admin_panel.models import *
 
 # These example values won't work. You must get your own api_id and
 # api_hash from https://my.telegram.org, under API Development.
+t = open('token.txt', 'r')
+TOKEN = t.readline()
+t.close()
+
+bot = telebot.TeleBot(TOKEN)
+
 lines = []
 f = open('info.txt')
 lines = f.readlines()
@@ -59,13 +68,19 @@ def parse_channels_names():
         res.append(c.key)
     return res
 
+def get_filters(id):
+    return Channel.objects.filter(key=create_dictionary()[id])[0].filters
 
+@bot.message_handler(func=lambda m: True)
 @client.on(events.NewMessage(chats=parse_channels_names()))
 async def my_event_handler(event):
-    id = event.message.id
-    filters = Channel.objects.filter(key=create_dictionary()[id]).filters
-    print()
-    await client.send_message('Korb1t', 'lul')
+    if event.message.from_id:
+        id = event.message.from_id
+    else:
+        id = event.message.to_id.channel_id
+    print(event)
+    #print(get_filters(id))
+    await bot.send_message(id, event.message.text)
 
 
 print(parse_channels_names())
@@ -81,7 +96,6 @@ print(parse_channels_names())
 
 
 client.start()
-print(create_dictionary())
 client.run_until_disconnected()
 
 '''dialogs = client.get_dialogs('t.me/vape_baraholkaua')
