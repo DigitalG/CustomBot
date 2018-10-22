@@ -9,4 +9,3 @@ def try_login(number, name):
     api_hash = lines[1]
 
     client = TelegramClient(name, api_id, api_hash)
-

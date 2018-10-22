@@ -20,7 +20,6 @@ api_hash = lines[1]
 client = TelegramClient('session_name', api_id, api_hash)
 
 
-
 def applyFilter(str, channel):
     result = str
     for f in channel.filters:
@@ -39,10 +38,11 @@ def create_dictionary():
     tmp = None
     channels = Channel.objects.all()
     for c in channels:
-        tmp = {c.key :client.get_entity(c.key).id}
+        tmp = {c.key: client.get_entity(c.key).id}
         res.append(tmp)
 
     return res
+
 
 def parse_channels():
     channels = Channel.objects.all()
@@ -64,20 +64,20 @@ def parse_channels_names():
 async def my_event_handler(event):
     id = event.message.id
     filters = Channel.objects.filter(key=create_dictionary()[id]).filters
-    print(filters)
+    print()
     await client.send_message('Korb1t', 'lul')
+
+
 print(parse_channels_names())
 
 
-
-
-@client.on(events.NewMessage(chats=['DigitalG', 'Korb1t']))
-def my_event_handler(event):
-    id = event.message.id
-    #filters =
-    print(Channel.objects.filter(key=create_dictionary()[id]).filters)
-    if '' in event.raw_text:
-        client.send_message('DigitalG', 'kughu')
+# @client.on(events.NewMessage(chats=['DigitalG', 'Korb1t']))
+# def my_event_handler(event):
+#     id = event.message.id
+#     # filters =
+#     print(Channel.objects.filter(key=create_dictionary()[id]).filters)
+#     if '' in event.raw_text:
+#         client.send_message('DigitalG', 'kughu')
 
 
 client.start()
