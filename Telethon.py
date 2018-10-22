@@ -69,7 +69,9 @@ def parse_channels_names():
     return res
 
 def get_filters(id):
-    return Channel.objects.filter(key=create_dictionary()[id])[0].filters
+    return Channel.objects.filter(key=create_dictionary()[id])[0].filter
+
+
 
 @bot.message_handler(func=lambda m: True)
 @client.on(events.NewMessage(chats=parse_channels_names()))
