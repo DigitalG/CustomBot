@@ -63,11 +63,12 @@ def add_channel(request):
         new_key = request.POST['Key']
         channel = Channel.objects.create(name=new_name,
                                          key=new_key)
-        min = Filter.objects.all().order_by('id')[0].id
-        max = Filter.objects.all().order_by('-id')[0].id
-        for i in range(min, max):
-            if request.POST['Check' + str(i)]:
-                channel.filters.add(Filter.objects.filter(pk=i)[0])
+        if Filter.objects.all():
+            min = Filter.objects.all().order_by('id')[0].id
+            max = Filter.objects.all().order_by('-id')[0].id
+            for i in range(min, max):
+                if request.POST['Check' + str(i)]:
+                    channel.filters.add(Filter.objects.filter(pk=i)[0])
 
         channel.save()
 
