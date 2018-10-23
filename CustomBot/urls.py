@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
+from django.urls import path
 from django.contrib import admin
 from admin_panel import views
 
@@ -27,5 +28,7 @@ urlpatterns = [
     url(r'channels_list/', views.channels_list, name='channel_list'),
     url(r'login/', views.login, name="login"),
     url('logout/', views.logout, name='logout'),
-    url(r'user_settings/', views.user_settings, name='user_settings')
+    url(r'user_settings/', views.user_settings, name='user_settings'),
+    path(r'channel_details/<int:id>/', views.channel_details, name='channel_details'),
+    path(r'edit_channel/<int:id>', views.edit_channel, name='edit_channel')
 ]

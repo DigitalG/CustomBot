@@ -5,6 +5,7 @@ import os
 from telebot import types
 from telebot.types import Message
 import telebot
+import asgiref
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CustomBot.settings")
 import django
@@ -29,26 +30,24 @@ api_hash = lines[1]
 client = TelegramClient('session_name', api_id, api_hash)
 
 
-def applyFilter(str, channel):
+def applyFilter(str, filter):
     result = str
-    for f in channel.filters:
-        if filter.type == 'Replace':
-            result = result.replace(filter.input, filter.output)
-        elif filter.type == 'Add Below':
-            result = result + '\n\n' + filter.input
-        elif filter.type == 'Remove':
-            result = result.replace(filter.input, '')
+    if filter.type == 'Replace':
+        result = result.replace(filter.input, filter.output)
+    elif filter.type == 'Add Below':
+        result = result + '\n\n' + filter.input
+    elif filter.type == 'Remove':
+        result = result.replace(filter.input, '')
 
     return result
 
 
 def create_dictionary():
-    res = []
+    res = {}
     tmp = None
     channels = Channel.objects.all()
     for c in channels:
-        tmp = {client.get_entity(c.key).id: str(c.key)}
-        res.append(tmp)
+        res[str(client.get_entity(c.key).id)] = str(c.key)
 
     return res
 
@@ -69,11 +68,16 @@ def parse_channels_names():
     return res
 
 
+def prepare_message(str, id):
+
+     return applyFilter(str, id)
+
 def get_filters(id):
     id = str(id)
-    return Channel.objects.filter(key=create_dictionary()[id])[0].filter
+    return Channel.objects.filter(key=create_dictionary()[str(id)])[0].filters.all()
 
-
+id = None
+str_to_send = ''
 @bot.message_handler(func=lambda m: True)
 @client.on(events.NewMessage(chats=parse_channels_names()))
 async def my_event_handler(event):
@@ -81,12 +85,21 @@ async def my_event_handler(event):
         id = event.message.from_id
     else:
         id = event.message.to_id.channel_id
+    print(id)
+    str_to_send = event.message.text
+    # await print(str)
     # get_filters(id)
     # print(get_filters(id))
     # print(event.message.to_id.user_id)
-    print(event)
-    await bot.send_message(event.message.to_id.user_id, event.message.text)
+    await client.send_message(id, '***')
 
+
+@bot.message_handler(func=lambda m: m.text.startswith('***'))
+def send_message(message):
+    msg = str_to_send
+    for f in get_filters(id):
+        msg = applyFilter(msg, id)
+    bot.send_message(id, msg)
 
 print(parse_channels_names())
 
@@ -100,7 +113,10 @@ print(parse_channels_names())
 
 
 client.start()
-print(create_dictionary())
+dic = create_dictionary()
+print(get_filters(340934389))
+# print(Channel.objects.filter(key=create_dictionary()['340934389'])[0].filters.all())
+# print(dic)
 client.run_until_disconnected()
 
 '''dialogs = client.get_dialogs('t.me/vape_baraholkaua')

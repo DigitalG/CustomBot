@@ -28,7 +28,7 @@ def create_filter(request):
         new_input = request.POST['Input']
         new_type = request.POST['Type']
         new_output = request.POST['Output']
-        #new_name = ''
+        # new_name = ''
         if new_type == 'Replace':
             new_name = 'Replace {} with {}'.format(new_input, new_output)
         else:
@@ -56,7 +56,6 @@ def channels_list(request):
 def add_channel(request):
     filters = Filter.objects.all()
     ctx = {'filters': filters}
-
 
     if request.method == 'POST':
         new_name = request.POST['Name']
@@ -99,5 +98,33 @@ def login(request):
 
 
 def user_settings(request):
-
     return render(request, 'user_settings.html')
+
+
+def channel_details(request, id):
+    channel = Channel.objects.filter(pk=id)[0]
+    filters = channel.filters.all()
+    ctx = {'channel': channel,
+           'filters': filters}
+
+    return render(request, 'channel_details.html', ctx)
+
+
+def edit_channel(request, id):
+    channel = Channel.objects.filter(pk=id)[0]
+    filters = Filter.objects.all()
+    if request.method == 'POST':
+        if Filter.objects.all():
+            min = Filter.objects.all().order_by('id')[0].id
+            max = Filter.objects.all().order_by('-id')[0].id
+            for i in range(min, max):
+                if 'Check' + str(i) in request.POST:
+                    channel.filters.add(Filter.objects.filter(pk=i)[0])
+
+        channel.save()
+    for f in filters:
+        if f in channel.filters.all():
+            filters = filters.exclude(name=f.name)
+    ctx = {'filters': filters}
+
+    return render(request, 'edit_channel.html', ctx)

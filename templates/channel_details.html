@@ -3,24 +3,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Forwarding Channels</title>
+    <title>Title</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 </head>
 <body>
-{% include "navbar.html" %}
+{% include 'navbar.html' %}
 <div class="container">
     <div class="col-3"></div>
     <div class="">
-        <h1>Forwarding Channels</h1><a href="/add_channel/" class="btn btn-dark mb-2">Add new channel</a>
+        <h1>{{ channel.name }}</h1>
+        <h2>Filters</h2>
+        <a href="/edit_channel/{{ channel.id }}" class="btn btn-dark mb-2">Edit Channel</a>
         <table class="table table-stripped">
             <tr class="bg-dark text-white">
                 <th class="">Name</th>
                 <th class="">Delete</th>
             </tr>
-            {% for f in channels %}
+            {% for f in filters %}
                 <tr class="td-hl">
-                    <td class=""><a href="/channel_details/{{ f.id }}">{{ f.name }}</a></td>
+                    <td class="">{{ f.name }}</td>
                     <td class="">
                         <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn btn-warning">
                             Delete
@@ -37,13 +39,5 @@
     </div>
     <div class="col-3"></div>
 </div>
-<script>
-    function OnDelete(id) {
-        var old = document.getElementById("DeleteButton" + String(id))
-        var newb = document.getElementById("DeleteForm" + String(id))
-        old.hidden = true
-        newb.hidden = false
-    }
-</script>
 </body>
 </html>
