@@ -13,14 +13,16 @@
     <div class="col-3"></div>
     <div class="">
         <h1>Forwarding Channels</h1><a href="/add_channel/" class="btn btn-dark mb-2">Add new channel</a>
-        <table class="table table-stripped">
+        <br>
+        <small class="text-muted">*You can click on channel names to view details or edit them</small>
+        <table class="table table-stripped table-hover">
             <tr class="bg-dark text-white">
                 <th class="">Name</th>
                 <th class="">Delete</th>
             </tr>
             {% for f in channels %}
-                <tr class="td-hl">
-                    <td class=""><a href="/channel_details/{{ f.id }}">{{ f.name }}</a></td>
+                <tr class="td-hl" onclick="document.location = '/channel_details/{{ f.id }}'">
+                    <td class="">{{ f.name }}</td>
                     <td class="">
                         <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn btn-warning">
                             Delete
@@ -46,4 +48,5 @@
     }
 </script>
 </body>
+{% include "footer.html" %}
 </html>

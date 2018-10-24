@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 </head>
 <body>
@@ -15,22 +16,22 @@
         <h1>{{ channel.name }}</h1>
         <h2>Filters</h2>
         <a href="/edit_channel/{{ channel.id }}" class="btn btn-dark mb-2">Edit Channel</a>
-        <table class="table table-stripped">
+        <table class="table table-stripped table-hover">
             <tr class="bg-dark text-white">
                 <th class="">Name</th>
-                <th class="">Delete</th>
+                <th class="txtc">Delete</th>
             </tr>
             {% for f in filters %}
                 <tr class="td-hl">
                     <td class="">{{ f.name }}</td>
-                    <td class="">
-                        <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn btn-warning">
+                    <td class="txtc">
+                        <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn-lg btn-warning">
                             Delete
                         </button>
                         <form method="post" id="DeleteForm{{ f.id }}" hidden>
                             {% csrf_token %}
-                            <input type="hidden" value="{{ f.id }}" name="ChannelId">
-                            <button id="SureButton{{ f.id }}" class="btn btn-danger">Are you sure?</button>
+                            <input type="hidden" value="{{ f.id }}" name="FilterId">
+                            <button id="SureButton{{ f.id }}" class="btn-sm btn-danger">Are you sure?</button>
                         </form>
                     </td>
                 </tr>
@@ -39,5 +40,14 @@
     </div>
     <div class="col-3"></div>
 </div>
+<script>
+    function OnDelete(id) {
+        var old = document.getElementById("DeleteButton" + String(id))
+        var newb = document.getElementById("DeleteForm" + String(id))
+        old.hidden = true
+        newb.hidden = false
+    }
+</script>
+{% include "footer.html" %}
 </body>
 </html>

@@ -65,8 +65,8 @@ def add_channel(request):
         if Filter.objects.all():
             min = Filter.objects.all().order_by('id')[0].id
             max = Filter.objects.all().order_by('-id')[0].id
-            for i in range(min, max):
-                if request.POST['Check' + str(i)]:
+            for i in range(min, max+1):
+                if 'Check' + str(i) in request.POST:
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
 
         channel.save()
@@ -98,7 +98,19 @@ def login(request):
 
 
 def user_settings(request):
-    return render(request, 'user_settings.html')
+    ctx={}
+    if request.method == 'POST':
+        if 'TokenSubmit' in request.POST:
+            TeleBot.objects.create(token=request.POST['token'])
+
+    if TeleBot.objects.all().exists():
+        ctx = {'IsToken':True,
+               'token': TeleBot.objects.all()[0].token}
+    else:
+        ctx = {'IsToken':False}
+
+
+    return render(request, 'user_settings.html', ctx)
 
 
 def channel_details(request, id):
@@ -106,6 +118,12 @@ def channel_details(request, id):
     filters = channel.filters.all()
     ctx = {'channel': channel,
            'filters': filters}
+
+    if request.method == 'POST':
+        id = request.POST['FilterId']
+        filters.get(pk=id).delete()
+
+
 
     return render(request, 'channel_details.html', ctx)
 
@@ -117,7 +135,8 @@ def edit_channel(request, id):
         if Filter.objects.all():
             min = Filter.objects.all().order_by('id')[0].id
             max = Filter.objects.all().order_by('-id')[0].id
-            for i in range(min, max):
+            print(max)
+            for i in range(min, max+1):
                 if 'Check' + str(i) in request.POST:
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
 
@@ -128,3 +147,31 @@ def edit_channel(request, id):
     ctx = {'filters': filters}
 
     return render(request, 'edit_channel.html', ctx)
+
+
+def tele_login(request):
+
+    session = Session.objects.all()
+    if session.exists():
+        phone_number = session[0].number
+        ctx = {'IsCode': True}
+    else:
+        ctx = {'IsCode': False}
+
+    if request.method == 'POST':
+        if session.exists():
+            to_edit = session[0]
+            to_edit.code = str(request.POST['Code'])
+            to_edit.save()
+            print(Session.objects.all()[0].code)
+            return HttpResponseRedirect("/index")
+
+        else:
+            Session.objects.create(name='1',
+                                   number = request.POST['PhoneNumber'],
+                                   code = '0',
+                                   active=True)
+            ctx = {'IsCode': True}
+            return render(request, 'tele_login.html', ctx)
+
+    return render(request, 'tele_login.html', ctx)

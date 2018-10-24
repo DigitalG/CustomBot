@@ -19,7 +19,7 @@ from django.contrib import admin
 from admin_panel import views
 
 urlpatterns = [
-    #url(r'/', views.index, name='index'),
+    #$url(r'', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'index/', views.index, name='index'),
     url(r'filters/', views.filters, name='filters'),
@@ -30,5 +30,6 @@ urlpatterns = [
     url('logout/', views.logout, name='logout'),
     url(r'user_settings/', views.user_settings, name='user_settings'),
     path(r'channel_details/<int:id>/', views.channel_details, name='channel_details'),
-    path(r'edit_channel/<int:id>', views.edit_channel, name='edit_channel')
+    path(r'edit_channel/<int:id>', views.edit_channel, name='edit_channel'),
+    url(r'tele_log/', views.tele_login, name='tele_login')
 ]

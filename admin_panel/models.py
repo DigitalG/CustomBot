@@ -12,7 +12,7 @@ class Filter(models.Model):
         db_table = 'Filter'
 
     def __str__(self):
-        return (self.name)
+        return (str(self.id) + self.name)
 
 
 class Channel(models.Model):
@@ -28,12 +28,16 @@ class Channel(models.Model):
 
 
 class Session(models.Model):
-    name = models.CharField(max_length=255)
-    number = models.IntegerField()
-    active = models.BooleanField()
+    name = models.CharField(max_length=255, blank=True, null=True)
+    number = models.CharField(max_length=15)
+    code = models.IntegerField(blank=True, null=True)
+    self_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'Session'
 
     def __str__(self):
         return (self.name)
+
+class TeleBot(models.Model):
+    token = models.CharField(max_length=255)

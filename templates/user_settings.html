@@ -27,29 +27,31 @@
             <div class="card">
                 <img class="card-img-top" src="{% static 'img/100x200_ph.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This card has supporting text below as a natural lead-in to additional
-                        content.</p>
-                    <p class="card-text">
-                        <small class="text-muted">Last updated 3 mins ago</small>
-                    </p>
-                </div>
-            </div>
-            <div class="card">
-                <img class="card-img-top" src="{% static 'img/100x200_ph.png' %}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                        additional content. This card has even longer content than the first to show that equal height
-                        action.</p>
-                    <p class="card-text">
-                        <small class="text-muted">Last updated 3 mins ago</small>
-                    </p>
+                    <form action="" method="post" name="Login_Form" class="form-signin" {% if IsToken %} hidden {% endif %}>
+                        {% csrf_token %}
+                        <h3 class="form-signin-heading">Add Telegram Bot token</h3>
+                        <input type="text" class="form-control mb-2" name="token" placeholder="Telegram Bot Token" required=""/>
+                        <button class="btn btn-primary btn-block" name="TokenSubmit" value="TokenSubmit" type="Submit">
+                            Submit
+                        </button>
+                    </form>
+                    {% if IsToken %}
+                        <button class="btn btn-block btn-dark" onclick="showToken()">Show Token</button>
+                        <input type="text" class="form-control" id="TokenShowcase" disabled hidden value = {{ token }}>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
     <div class="col-3"></div>
 </div>
+<script>
+    function showToken()
+    {
+        var token = document.getElementById("TokenShowcase")
+        token.hidden = false
+    }
+</script>
 </body>
+{% include "footer.html" %}
 </html>
