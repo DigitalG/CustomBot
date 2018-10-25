@@ -24,6 +24,8 @@ lines = f.readlines()
 api_id = int(lines[0])
 api_hash = lines[1]
 
+
+
 phone_number = None
 code = '0'
 while not phone_number:
@@ -37,18 +39,22 @@ if phone_number:
     if not client.is_user_authorized():
         if code == '0':
             client.send_code_request(phone_number)
-            while(code == '0'):
+            while (code == '0'):
                 code = str(Session.objects.all()[0].code)
                 time.sleep(3)
                 print('waiting for code...')
             client.sign_in(phone_number, code)
+
+to_edit = Session.objects.all()[0]
+to_edit.self_id = client.get_me().id
+to_edit.save()
 #             client.download_profile_photo(phone_number,'admin_panel/static/img/profile')
 #
 # myself = client.get_entity(phone_number)
 # client.download_profile_photo(myself,'admin_panel/static/img/profile')
 
 client_id = client.get_entity(phone_number)
-
+print('>>>Debug:Bot Started')
 
 def applyFilter(str, filter):
     result = str
@@ -61,15 +67,15 @@ def applyFilter(str, filter):
 
     return result
 
-
-def create_dictionary():
-    res = {}
-    tmp = None
-    channels = Channel.objects.all()
-    for c in channels:
-        res[str(client.get_entity(c.key).id)] = str(c.key)
-
-    return res
+def dic_check(key):
+    f = open('dic.txt', 'r+')
+    tmp = f.readlines()
+    for r in tmp:
+        str = r.split(';')
+        dic[str[0]] = str[1]
+    if key not in dic:
+        dic[key] = client.get_entity(key).id
+        f.write('{};{}'.format(key, client.get_entity(key)))
 
 
 def parse_channels():
@@ -89,22 +95,12 @@ def parse_channels_names():
 
 
 def prepare_message(str, id):
+    return applyFilter(str, id)
 
-     return applyFilter(str, id)
 
 def get_filters(id):
     id = str(id)
     return Channel.objects.filter(key=create_dictionary()[str(id)])[0].filters.all()
-
-
-while not TeleBot.objects.all().exists():
-    print('Waiting for bot token')
-    time.sleep(3)
-
-TOKEN = ''
-#TOKEN = TeleBot.objects.all()[0].token
-bot = telebot.TeleBot(TOKEN)
-bot_id = bot.get_me().id
 
 id = None
 str_to_send = ''
@@ -119,7 +115,7 @@ async def my_event_handler(event):
     str_to_send = event.message.text
     print('{} send to {}'.format(str_to_send, str(id)))
     f = open('msg.txt', 'w')
-    f.write('{}|||{}'.format(str_to_send,id))
+    f.write('{}|||{}'.format(str_to_send, id))
     # await print(str)
     # get_filters(id)
     # print(get_filters(id))
