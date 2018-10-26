@@ -15,13 +15,9 @@ import django
 django.setup()
 from admin_panel.models import *
 
-# These example values won't work. You must get your own api_id and
-# api_hash from https://my.telegram.org, under API Development.
-
 TOKEN = TeleBot.objects.all()[0].token
 bot = telebot.TeleBot(TOKEN)
 bot_id = bot.get_me().id
-
 
 lines = []
 f = open('info.txt')
@@ -51,11 +47,6 @@ if phone_number:
 to_edit = Session.objects.all()[0]
 to_edit.self_id = client.get_me().id
 to_edit.save()
-#             client.download_profile_photo(phone_number,'admin_panel/static/img/profile')
-#
-# myself = client.get_entity(phone_number)
-# client.download_profile_photo(myself,'admin_panel/static/img/profile')
-
 
 client.get_dialogs()
 client_id = client.get_entity(phone_number)
@@ -124,6 +115,7 @@ def get_filters(id):
 id = None
 str_to_send = ''
 
+
 @client.on(events.NewMessage(chats=parse_channels_names()))
 async def my_event_handler(event):
     if event.message.from_id:
@@ -134,47 +126,9 @@ async def my_event_handler(event):
     print('{} send to {}'.format(str_to_send, str(id)))
     f = open('msg.txt', 'w')
     f.write('{}|||{}'.format(str_to_send, id))
-    # await client.send_message(bot_id, '***')
     message = await client.forward_messages(bot_entity, event.message)
     await asyncio.sleep(1)
     await message.delete()
 
 
-# @client.on(events.NewMessage(chats=['DigitalG', 'Korb1t']))
-# def my_event_handler(event):
-#     id = event.message.id
-#     # filters =
-#     print(Channel.objects.filter(key=create_dictionary()[id]).filters)
-#     if '' in event.raw_text:
-#         client.send_message('DigitalG', 'kughu')
-
-
-# client.start()
-# print(Channel.objects.filter(key=create_dictionary()['340934389'])[0].filters.all())
-# print(dic)
 client.run_until_disconnected()
-
-'''dialogs = client.get_dialogs('t.me/vape_baraholkaua')
-client.send_message('Korbit',[dialogs])
-
-print(client.get_me().stringify())
-
-client.send_message('vasylmartyniv', 'Hello! Talking to you from Telethon')
-client.send_file('username', '/home/myself/Pictures/holidays.jpg')
-
-for dialog in client.get_dialogs(limit=2):
-    for message in client.iter_messages(dialog, limit=1):
-        print(dialog.name, ' text= ' + message.text)
-
-#client.get_input_message('DigitalG')
-@client.on(events.NewMessage(pattern='(?i)hi|hello'))
-async def handler(event):
-    await event.respond('Hey!')
-client.start()
-
-list = ['хуй','пизда','жопа','соски','ебать ты лох','мразь','нахуй иди']
-while True:
-    client.send_message('DigitalG',random.choice(list))
-
-client.start()
-client.run_until_disconnected()'''
