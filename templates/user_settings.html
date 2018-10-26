@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 </head>
@@ -16,28 +17,38 @@
             <div class="card">
                 <img class="card-img-top" src="{% static 'img/100x200_ph.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to
-                        additional content. This content is a little bit longer.</p>
-                    <p class="card-text">
-                        <small class="text-muted">Last updated 3 mins ago</small>
-                    </p>
+                    <h5 class="card-title">Telegram Login</h5>
+                    {% if IsLogin is False %}
+                        <a class="btn btn-block btn-dark" href="/tele_log/">Login</a>
+                    {% else %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group" id="form">
+                                <button type="submit" class="btn btn-danger btn-block" id="ResetLogin"
+                                        name="ResetLogin">Reset
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
             <div class="card">
                 <img class="card-img-top" src="{% static 'img/100x200_ph.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <form action="" method="post" name="Login_Form" class="form-signin" {% if IsToken %} hidden {% endif %}>
+                    <form action="" method="post" name="Login_Form" class="form-signin" {% if IsToken %}
+                          hidden {% endif %}>
                         {% csrf_token %}
                         <h3 class="form-signin-heading">Add Telegram Bot token</h3>
-                        <input type="text" class="form-control mb-2" name="token" placeholder="Telegram Bot Token" required=""/>
+                        <input type="text" class="form-control mb-2" name="token" placeholder="Telegram Bot Token"
+                               required=""/>
                         <button class="btn btn-primary btn-block" name="TokenSubmit" value="TokenSubmit" type="Submit">
                             Submit
                         </button>
                     </form>
                     {% if IsToken %}
+                        <h5 class="card-title">Telegram Token</h5>
                         <button class="btn btn-block btn-dark" onclick="showToken()">Show Token</button>
-                        <input type="text" class="form-control" id="TokenShowcase" disabled hidden value = {{ token }}>
+                        <input type="text" class="form-control" id="TokenShowcase" disabled hidden value= {{ token }}>
                     {% endif %}
                 </div>
             </div>
@@ -46,8 +57,7 @@
     <div class="col-3"></div>
 </div>
 <script>
-    function showToken()
-    {
+    function showToken() {
         var token = document.getElementById("TokenShowcase")
         token.hidden = false
     }

@@ -60,8 +60,16 @@ def add_channel(request):
     if request.method == 'POST':
         new_name = request.POST['Name']
         new_key = request.POST['Key']
+        new_forfilter = request.POST['ForFilter']
+        if 'CheckCaption' in request.POST:
+            keep = True
+        else:
+            keep=False
+
         channel = Channel.objects.create(name=new_name,
-                                         key=new_key)
+                                         key=new_key,
+                                         forfilter=new_forfilter,
+                                         KeepForwardedCaption=keep)
         if Filter.objects.all():
             min = Filter.objects.all().order_by('id')[0].id
             max = Filter.objects.all().order_by('-id')[0].id
@@ -103,11 +111,20 @@ def user_settings(request):
         if 'TokenSubmit' in request.POST:
             TeleBot.objects.create(token=request.POST['token'])
 
+        if 'ResetLogin' in request.POST:
+            print('Debug')
+            Session.objects.all()[0].delete()
+
     if TeleBot.objects.all().exists():
         ctx = {'IsToken':True,
                'token': TeleBot.objects.all()[0].token}
     else:
         ctx = {'IsToken':False}
+
+    if Session.objects.all().exists():
+        ctx['IsLogin'] = True
+    else:
+        ctx['IsLogin'] = False
 
 
     return render(request, 'user_settings.html', ctx)
@@ -139,12 +156,46 @@ def edit_channel(request, id):
             for i in range(min, max+1):
                 if 'Check' + str(i) in request.POST:
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
-
+        new_name = request.POST['Name']
+        new_key = request.POST['Key']
+        new_forfilter = request.POST['ForFilter']
+        if 'CheckCaption' in request.POST:
+            keep = True
+        else:
+            keep=False
+        channel.name = new_name
+        channel.key = new_key
+        channel.forfilter = new_forfilter
+        channel.KeepForwardedCaption = keep
         channel.save()
+
     for f in filters:
         if f in channel.filters.all():
             filters = filters.exclude(name=f.name)
-    ctx = {'filters': filters}
+
+    OnlyText = False
+    OnlyImages = False
+    OnlyMImages = False
+    OnlyMText = False
+
+    if channel.forfilter == 'Only Text':
+        OnlyText = True
+    elif channel.forfilter== 'Only Images':
+        OnlyImages = True
+    elif channel.forfilter == 'Only messages that include an image':
+        OnlyMImages == True
+    elif channel.forfilter == 'Only messages that include text':
+        OnlyMText == True
+
+
+    ctx = {'filters': filters,
+           'name':channel.name,
+           'OnlyText':OnlyText,
+           'OnlyImages':OnlyImages,
+           'OnlyMImages':OnlyMImages,
+           'OnlyMText':OnlyMText,
+           'KeepForwardedCaption':channel.KeepForwardedCaption,
+           'key':channel.key}
 
     return render(request, 'edit_channel.html', ctx)
 
@@ -169,8 +220,7 @@ def tele_login(request):
         else:
             Session.objects.create(name='1',
                                    number = request.POST['PhoneNumber'],
-                                   code = '0',
-                                   active=True)
+                                   code = '0')
             ctx = {'IsCode': True}
             return render(request, 'tele_login.html', ctx)
 

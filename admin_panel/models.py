@@ -18,7 +18,9 @@ class Filter(models.Model):
 class Channel(models.Model):
     name = models.CharField(max_length=255)
     key = models.CharField(max_length=255)
+    forfilter = models.CharField(max_length=255,default='')
     filters = models.ManyToManyField(Filter)
+    KeepForwardedCaption=models.BooleanField(default=True)
 
     class Meta:
         db_table = 'Channel'

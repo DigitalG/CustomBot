@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Forwarding Channels</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 </head>
@@ -21,8 +22,8 @@
                 <th class="">Delete</th>
             </tr>
             {% for f in channels %}
-                <tr class="td-hl" onclick="document.location = '/channel_details/{{ f.id }}'">
-                    <td class="">{{ f.name }}</td>
+                <tr class="td-hl">
+                    <td class="" onclick="document.location = '/channel_details/{{ f.id }}'">{{ f.name }}</td>
                     <td class="">
                         <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn btn-warning">
                             Delete

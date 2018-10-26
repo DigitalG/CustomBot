@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Channel</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 </head>
@@ -15,6 +16,26 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group" id="form">
+                <label for="Name">Name</label>
+                <input value="{{ name }}" type="text" name="Name" class="form-control" id="Name" placeholder="Enter channel name" required>
+                <br>
+                <label for="Key">Filter forward massage</label>
+                <select class="form-control" name="ForFilter" id="ForFilter">
+                    <option {% if OnlyText %}selected{% endif %}>Only Text</option>
+                    <option {% if OnlyImages %}selected{% endif %}>Only Images</option>
+                    <option {% if OnlyMImages %}selected{% endif %}>Only messages that include an image</option>
+                    <option {% if OnlyMText %}selected{% endif %}>Only messages that include text</option>
+                </select>
+                <br>
+                <label for="Key">Key</label>
+                <input value="{{ key }}" type="text" name="Key" class="form-control" id="Key" placeholder="Key">
+                <small class="text-muted"> - It can be username, group name, id, invite link, etc.</small>
+                <br>
+                <input class="form-check-input" type="checkbox" id="CheckCaption" value="CheckCaption"
+                       name="CheckCaption" {% if KeepForwardedCaption %}checked{% endif %}>
+                <label class="form-check-label" for="CheckCaption">Keep Forwarded from caption</label>
+                <br>
+                <label class="form-check-label" for="Check{{ f.id }}">{{ f.name }}</label>
                 {% if filters|length %}
                     <label for="">Choose filters to add</label><br>
                     {% for f in filters %}
@@ -24,9 +45,12 @@
                             <label class="form-check-label" for="Check{{ f.id }}">{{ f.name }}</label>
                         </div>
                     {% endfor %}
+                {% else %}
+                    <h3>There no filters to add</h3>
                     <br>
                 {% endif %}
-                <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton1" name="SubmitToIndex">Add Filter
+
+                <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton1" name="SubmitToIndex">Submit
                 </button>
             </div>
         </form>

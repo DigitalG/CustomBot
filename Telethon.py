@@ -1,4 +1,5 @@
 from telethon import TelegramClient, events, sync, client
+from telethon.tl.types import PeerUser, PeerChannel
 import asyncio
 import random
 import os
@@ -17,14 +18,16 @@ from admin_panel.models import *
 # These example values won't work. You must get your own api_id and
 # api_hash from https://my.telegram.org, under API Development.
 
+TOKEN = TeleBot.objects.all()[0].token
+bot = telebot.TeleBot(TOKEN)
+bot_id = bot.get_me().id
+
 
 lines = []
 f = open('info.txt')
 lines = f.readlines()
 api_id = int(lines[0])
 api_hash = lines[1]
-
-
 
 phone_number = None
 code = '0'
@@ -53,8 +56,12 @@ to_edit.save()
 # myself = client.get_entity(phone_number)
 # client.download_profile_photo(myself,'admin_panel/static/img/profile')
 
+
+client.get_dialogs()
 client_id = client.get_entity(phone_number)
+bot_entity = client.get_entity(bot_id)
 print('>>>Debug:Bot Started')
+
 
 def applyFilter(str, filter):
     result = str
@@ -66,6 +73,7 @@ def applyFilter(str, filter):
         result = result.replace(filter.input, '')
 
     return result
+
 
 def dic_check(key):
     f = open('dic.txt', 'r+')
@@ -87,10 +95,20 @@ def parse_channels():
 
 
 def parse_channels_names():
+    f = open('dic.txt', 'r+')
+    tmp = f.readlines()
+    dic = {}
+    for r in tmp:
+        str = r.split(';')
+        dic[str[0]] = str[1]
     channels = Channel.objects.all()
     res = []
     for c in channels:
         res.append(c.key)
+        if c.key not in dic:
+            dic[c.key] = client.get_entity(c.key).id
+            f.write('{};{}\n'.format(c.key, client.get_entity(c.key).id))
+
     return res
 
 
@@ -102,9 +120,9 @@ def get_filters(id):
     id = str(id)
     return Channel.objects.filter(key=create_dictionary()[str(id)])[0].filters.all()
 
+
 id = None
 str_to_send = ''
-
 
 @client.on(events.NewMessage(chats=parse_channels_names()))
 async def my_event_handler(event):
@@ -116,11 +134,10 @@ async def my_event_handler(event):
     print('{} send to {}'.format(str_to_send, str(id)))
     f = open('msg.txt', 'w')
     f.write('{}|||{}'.format(str_to_send, id))
-    # await print(str)
-    # get_filters(id)
-    # print(get_filters(id))
-    # print(event.message.to_id.user_id)
-    await client.send_message(bot_id, '***')
+    # await client.send_message(bot_id, '***')
+    message = await client.forward_messages(bot_entity, event.message)
+    await asyncio.sleep(1)
+    await message.delete()
 
 
 # @client.on(events.NewMessage(chats=['DigitalG', 'Korb1t']))
