@@ -5,7 +5,6 @@ from django.contrib import auth
 from django.contrib.auth import logout as django_logout
 
 
-# Create your views here.
 def index(request):
     filters = Filter.objects.all()
     return render(request, 'index.html')
@@ -28,7 +27,6 @@ def create_filter(request):
         new_input = request.POST['Input']
         new_type = request.POST['Type']
         new_output = request.POST['Output']
-        # new_name = ''
         if new_type == 'Replace':
             new_name = 'Replace {} with {}'.format(new_input, new_output)
         else:
@@ -64,7 +62,7 @@ def add_channel(request):
         if 'CheckCaption' in request.POST:
             keep = True
         else:
-            keep=False
+            keep = False
 
         channel = Channel.objects.create(name=new_name,
                                          key=new_key,
@@ -73,7 +71,7 @@ def add_channel(request):
         if Filter.objects.all():
             min = Filter.objects.all().order_by('id')[0].id
             max = Filter.objects.all().order_by('-id')[0].id
-            for i in range(min, max+1):
+            for i in range(min, max + 1):
                 if 'Check' + str(i) in request.POST:
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
 
@@ -106,7 +104,7 @@ def login(request):
 
 
 def user_settings(request):
-    ctx={}
+    ctx = {}
     if request.method == 'POST':
         if 'TokenSubmit' in request.POST:
             TeleBot.objects.create(token=request.POST['token'])
@@ -116,16 +114,15 @@ def user_settings(request):
             Session.objects.all()[0].delete()
 
     if TeleBot.objects.all().exists():
-        ctx = {'IsToken':True,
+        ctx = {'IsToken': True,
                'token': TeleBot.objects.all()[0].token}
     else:
-        ctx = {'IsToken':False}
+        ctx = {'IsToken': False}
 
     if Session.objects.all().exists():
         ctx['IsLogin'] = True
     else:
         ctx['IsLogin'] = False
-
 
     return render(request, 'user_settings.html', ctx)
 
@@ -140,8 +137,6 @@ def channel_details(request, id):
         id = request.POST['FilterId']
         filters.get(pk=id).delete()
 
-
-
     return render(request, 'channel_details.html', ctx)
 
 
@@ -153,7 +148,7 @@ def edit_channel(request, id):
             min = Filter.objects.all().order_by('id')[0].id
             max = Filter.objects.all().order_by('-id')[0].id
             print(max)
-            for i in range(min, max+1):
+            for i in range(min, max + 1):
                 if 'Check' + str(i) in request.POST:
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
         new_name = request.POST['Name']
@@ -162,7 +157,7 @@ def edit_channel(request, id):
         if 'CheckCaption' in request.POST:
             keep = True
         else:
-            keep=False
+            keep = False
         channel.name = new_name
         channel.key = new_key
         channel.forfilter = new_forfilter
@@ -180,28 +175,26 @@ def edit_channel(request, id):
 
     if channel.forfilter == 'Only Text':
         OnlyText = True
-    elif channel.forfilter== 'Only Images':
+    elif channel.forfilter == 'Only Images':
         OnlyImages = True
     elif channel.forfilter == 'Only messages that include an image':
         OnlyMImages == True
     elif channel.forfilter == 'Only messages that include text':
         OnlyMText == True
 
-
     ctx = {'filters': filters,
-           'name':channel.name,
-           'OnlyText':OnlyText,
-           'OnlyImages':OnlyImages,
-           'OnlyMImages':OnlyMImages,
-           'OnlyMText':OnlyMText,
-           'KeepForwardedCaption':channel.KeepForwardedCaption,
-           'key':channel.key}
+           'name': channel.name,
+           'OnlyText': OnlyText,
+           'OnlyImages': OnlyImages,
+           'OnlyMImages': OnlyMImages,
+           'OnlyMText': OnlyMText,
+           'KeepForwardedCaption': channel.KeepForwardedCaption,
+           'key': channel.key}
 
     return render(request, 'edit_channel.html', ctx)
 
 
 def tele_login(request):
-
     session = Session.objects.all()
     if session.exists():
         phone_number = session[0].number
@@ -219,8 +212,8 @@ def tele_login(request):
 
         else:
             Session.objects.create(name='1',
-                                   number = request.POST['PhoneNumber'],
-                                   code = '0')
+                                   number=request.POST['PhoneNumber'],
+                                   code='0')
             ctx = {'IsCode': True}
             return render(request, 'tele_login.html', ctx)
 

@@ -19,17 +19,17 @@ from django.contrib import admin
 from admin_panel import views
 
 urlpatterns = [
-    #$url(r'', views.index, name='index'),
+    path(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
-    url(r'index/', views.index, name='index'),
-    url(r'filters/', views.filters, name='filters'),
-    url(r'create_filter/', views.create_filter, name='create_filter'),
-    url(r'add_channel/', views.add_channel, name='add_channel'),
-    url(r'channels_list/', views.channels_list, name='channel_list'),
-    url(r'login/', views.login, name="login"),
-    url('logout/', views.logout, name='logout'),
-    url(r'user_settings/', views.user_settings, name='user_settings'),
+    path(r'index/', views.index, name='index'),
+    path(r'filters/', views.filters, name='filters'),
+    path(r'create_filter/', views.create_filter, name='create_filter'),
+    path(r'add_channel/', views.add_channel, name='add_channel'),
+    path(r'channels_list/', views.channels_list, name='channel_list'),
+    path(r'login/', views.login, name="login"),
+    path('logout/', views.logout, name='logout'),
+    path(r'user_settings/', views.user_settings, name='user_settings'),
     path(r'channel_details/<int:id>/', views.channel_details, name='channel_details'),
     path(r'edit_channel/<int:id>', views.edit_channel, name='edit_channel'),
-    url(r'tele_log/', views.tele_login, name='tele_login')
+    path(r'tele_log/', views.tele_login, name='tele_login')
 ]

@@ -12,7 +12,7 @@ class Filter(models.Model):
         db_table = 'Filter'
 
     def __str__(self):
-        return (str(self.id) + self.name)
+        return ( self.name)
 
 
 class Channel(models.Model):
