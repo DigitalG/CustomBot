@@ -18,9 +18,9 @@ while not TeleBot.objects.all().exists():
 while not Session.objects.all().exists():
     print('Waithing for login')
     time.sleep(3)
-    client_id = Session.objects.all()[0].self_id
 
 TOKEN = TeleBot.objects.all()[0].token
+client_id = Session.objects.all()[0].self_id
 bot = telebot.TeleBot(TOKEN)
 bot_id = bot.get_me().id
 print('>>>Debug: Start')
