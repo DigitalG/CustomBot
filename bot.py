@@ -15,10 +15,14 @@ while not TeleBot.objects.all().exists():
     print('Waiting for bot token')
     time.sleep(3)
 
+while not Session.objects.all().exists():
+    print('Waithing for login')
+    time.sleep(3)
+    client_id = Session.objects.all()[0].self_id
+
 TOKEN = TeleBot.objects.all()[0].token
 bot = telebot.TeleBot(TOKEN)
 bot_id = bot.get_me().id
-client_id = Session.objects.all()[0].self_id
 print('>>>Debug: Start')
 
 
