@@ -3,6 +3,7 @@ from .models import *
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth import logout as django_logout
+import os
 
 
 def index(request):
@@ -110,8 +111,13 @@ def user_settings(request):
             TeleBot.objects.create(token=request.POST['token'])
 
         if 'ResetLogin' in request.POST:
-            print('Debug')
+            phone_number = Session.objects.all()[0].number
+            os.remove('./{}.session'.format(phone_number))
             Session.objects.all()[0].delete()
+
+
+        if 'ResetToken' in request.POST:
+            TeleBot.objects.all()[0].delete()
 
     if TeleBot.objects.all().exists():
         ctx = {'IsToken': True,
@@ -147,7 +153,6 @@ def edit_channel(request, id):
         if Filter.objects.all():
             min = Filter.objects.all().order_by('id')[0].id
             max = Filter.objects.all().order_by('-id')[0].id
-            print(max)
             for i in range(min, max + 1):
                 if 'Check' + str(i) in request.POST:
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
@@ -164,6 +169,8 @@ def edit_channel(request, id):
         channel.KeepForwardedCaption = keep
         channel.save()
 
+        return HttpResponseRedirect('/channel_details/{}'.format(id))
+
     for f in filters:
         if f in channel.filters.all():
             filters = filters.exclude(name=f.name)
@@ -172,15 +179,18 @@ def edit_channel(request, id):
     OnlyImages = False
     OnlyMImages = False
     OnlyMText = False
+    Everything = False
 
     if channel.forfilter == 'Only Text':
         OnlyText = True
     elif channel.forfilter == 'Only Images':
         OnlyImages = True
     elif channel.forfilter == 'Only messages that include an image':
-        OnlyMImages == True
+        OnlyMImages = True
     elif channel.forfilter == 'Only messages that include text':
-        OnlyMText == True
+        OnlyMText = True
+    elif channel.forfilter == 'Everything':
+        Everything = True
 
     ctx = {'filters': filters,
            'name': channel.name,
@@ -188,6 +198,7 @@ def edit_channel(request, id):
            'OnlyImages': OnlyImages,
            'OnlyMImages': OnlyMImages,
            'OnlyMText': OnlyMText,
+           'Everything': Everything,
            'KeepForwardedCaption': channel.KeepForwardedCaption,
            'key': channel.key}
 

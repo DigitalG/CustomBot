@@ -37,11 +37,14 @@ def applyFilter(filter: Filter, str):
         result = result.replace(filter.input, filter.output)
         result = result.replace(filter.input.upper(), filter.output)
     elif filter.type == 'Add Below':
-        result = str + '\n\n' + filter.input
+        result = str + '\n' + filter.input
     elif filter.type == 'Remove':
         result = str.replace(filter.input, '')
         result = result.replace(filter.input.upper(), '')
         result = result.replace(filter.input.lower(), '')
+    elif filter.type == 'If {Input} spotted add {Output} below':
+        if filter.input in str or filter.input.lower() in str or filter.input.upper() in str:
+            result = str + '\n' + filter.output
 
     return result
 
@@ -63,14 +66,30 @@ def send_text(message: Message):
     f = open('dic.txt', 'r')
     dic = parse_dictionary()
     tmp = f.read().split(';')
-    key = dic[str(message.forward_from.id)]
+    print(message)
+    if message.forward_from_chat:
+        key = dic[str(message.forward_from_chat.id).replace('-100', '')]
+        title = message.forward_from_chat.title
+    elif message.chat:
+        key = dic[str(message.chat.id).replace('-', '')]
+        title = message.chat.title
+    elif message.forward_from:
+        key = dic[str(message.forward_from.id)]
+        title = message.forward_from.username
     text = message.text
-    channel = Channel.objects.get(key=key)
+    try:
+        channel = Channel.objects.get(key=key)
+    except Channel.DoesNotExist:
+        return
     if not channel.forfilter == 'Only messages that include an image':
         for fl in channel.filters.all():
-            text = applyFilter(fl, text)
+            if fl.type == 'Get messages only from {Input} username':
+                if message.from_user.username != fl.input:
+                    return
+            else:
+                text = applyFilter(fl, text)
         if channel.KeepForwardedCaption:
-            text = 'Forwarded from @{}: \n  {}'.format(message.forward_from.username, text)
+            text = 'Forwarded from @{}: \n  {}'.format(title, text)
         bot.send_message(client_id, text)
 
 
@@ -79,18 +98,43 @@ def handle_docs_audio(message):
     f = open('dic.txt', 'r')
     dic = parse_dictionary()
     tmp = f.read().split(';')
-    key = dic[str(message.from_user.id)]
+    print(message)
+    if message.forward_from_chat:
+        key = dic[str(message.forward_from_chat.id).replace('-100', '')]
+        title = message.forward_from_chat.title
+    elif message.chat:
+        key = dic[str(message.chat.id).replace('-', '')]
+        title = message.chat.title
+    elif message.forward_from:
+        key = dic[str(message.forward_from.id)]
+        title = message.forward_from.username
     text = message.text
-    channel = Channel.objects.get(key=key)
-    caption = message.json['caption']
+    try:
+        channel = Channel.objects.get(key=key)
+    except Channel.DoesNotExist:
+        return
+
+    caption = ''
+    part = ''
+    try:
+        if message.json['caption']:
+            part = message.json['caption']
+    except KeyError:
+        part = ''
     if channel.forfilter == 'Only Images':
         caption = ''
         bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
     if channel.forfilter == 'Only messages that include an image':
-        caption = message.json['caption']
+        caption = 'Forwarded from {}\n\n{}'.format(title, part)
         bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
     if channel.forfilter == 'Only Text':
         bot.send_message(client_id, caption)
+    if channel.forfilter == 'Only messages that include an text' and message.json['caption']:
+        caption = 'Forwarded from {}\n\n{}'.format(title, part)
+        bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
+    if channel.forfilter == 'Everything':
+        caption = 'Forwarded from {}\n\n{}'.format(title, part)
+        bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
 
 
 @bot.message_handler(content_types=['video'])

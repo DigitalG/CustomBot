@@ -33,7 +33,7 @@ while not phone_number:
     if Session.objects.all().exists():
         phone_number = Session.objects.all()[0].number
 if phone_number:
-    client = TelegramClient('s2', api_id, api_hash)
+    client = TelegramClient(phone_number, api_id, api_hash)
     client.connect()
     if not client.is_user_authorized():
         if code == '0':
@@ -42,6 +42,9 @@ if phone_number:
                 code = str(Session.objects.all()[0].code)
                 time.sleep(3)
                 print('waiting for code...')
+            Session.objects.all()[0].code = '0'
+            Session.objects.all()[0].save()
+
             client.sign_in(phone_number, code)
 
 to_edit = Session.objects.all()[0]
@@ -49,7 +52,6 @@ to_edit.self_id = client.get_me().id
 to_edit.save()
 
 client.get_dialogs()
-client_id = client.get_entity(phone_number)
 bot_entity = client.get_entity(bot_id)
 print('>>>Debug:Bot Started')
 

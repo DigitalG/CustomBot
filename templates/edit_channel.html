@@ -17,10 +17,12 @@
             {% csrf_token %}
             <div class="form-group" id="form">
                 <label for="Name">Name</label>
-                <input value="{{ name }}" type="text" name="Name" class="form-control" id="Name" placeholder="Enter channel name" required>
+                <input value="{{ name }}" type="text" name="Name" class="form-control" id="Name"
+                       placeholder="Enter channel name" required>
                 <br>
                 <label for="Key">Filter forward massage</label>
                 <select class="form-control" name="ForFilter" id="ForFilter">
+                    <option {% if OnlyText %}selected{% endif %}>Everything</option>
                     <option {% if OnlyText %}selected{% endif %}>Only Text</option>
                     <option {% if OnlyImages %}selected{% endif %}>Only Images</option>
                     <option {% if OnlyMImages %}selected{% endif %}>Only messages that include an image</option>
@@ -31,13 +33,15 @@
                 <input value="{{ key }}" type="text" name="Key" class="form-control" id="Key" placeholder="Key">
                 <small class="text-muted"> - It can be username, group name, id, invite link, etc.</small>
                 <br>
-                <input class="form-check-input" type="checkbox" id="CheckCaption" value="CheckCaption"
-                       name="CheckCaption" {% if KeepForwardedCaption %}checked{% endif %}>
-                <label class="form-check-label" for="CheckCaption">Keep Forwarded from caption</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="CheckCaption" value="CheckCaption"
+                           name="CheckCaption" {% if KeepForwardedCaption %}checked{% endif %}>
+                    <label class="form-check-label" for="CheckCaption">Keep Forwarded from caption</label>
+                </div>
                 <br>
                 <label class="form-check-label" for="Check{{ f.id }}">{{ f.name }}</label>
                 {% if filters|length %}
-                    <label for="">Choose filters to add</label><br>
+                    <label class="mt-2" for="">Choose filters to add</label><br>
                     {% for f in filters %}
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="Check{{ f.id }}" value="Check{{ f.id }}"
@@ -45,6 +49,7 @@
                             <label class="form-check-label" for="Check{{ f.id }}">{{ f.name }}</label>
                         </div>
                     {% endfor %}
+                    <br>
                 {% else %}
                     <h3>There no filters to add</h3>
                     <br>

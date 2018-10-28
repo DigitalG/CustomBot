@@ -47,8 +47,17 @@
                     </form>
                     {% if IsToken %}
                         <h5 class="card-title">Telegram Token</h5>
-                        <button class="btn btn-block btn-dark" onclick="showToken()">Show Token</button>
-                        <input type="text" class="form-control" id="TokenShowcase" disabled hidden value= {{ token }}>
+                        <button class="btn btn-block btn-dark mb-2" onclick="showToken()">Toggle Token</button>
+                        <input type="text" class="form-control mb-2" id="TokenShowcase" disabled hidden value= {{ token }}>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group" id="form">
+                                <button type="submit" class="btn btn-danger btn-block" id="ResetToken"
+                                        name="ResetToken">
+                                    Reset Token
+                                </button>
+                            </div>
+                        </form>
                     {% endif %}
                 </div>
             </div>
@@ -59,7 +68,7 @@
 <script>
     function showToken() {
         var token = document.getElementById("TokenShowcase")
-        token.hidden = false
+        token.hidden = !token.hidden
     }
 </script>
 </body>

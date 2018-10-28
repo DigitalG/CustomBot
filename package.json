@@ -1,6 +1,6 @@
 {
-  'content_type': 'photo',
-  'message_id': 3903,
+  'content_type': 'text',
+  'message_id': 4248,
   'from_user': {
     'id': 181375634,
     'is_bot': False,
@@ -9,7 +9,7 @@
     'last_name': None,
     'language_code': 'en-UA'
   },
-  'date': 1540542457,
+  'date': 1540648668,
   'chat': {
     'type': 'private',
     'last_name': None,
@@ -25,55 +25,31 @@
     'sticker_set_name': None,
     'can_set_sticker_set': None
   },
-  'forward_from_chat': {
-    'type': 'channel',
+  'forward_from_chat': None,
+  'forward_from': {
+    'id': 181375634,
+    'is_bot': False,
+    'first_name': 'Theodor II',
+    'username': 'Korb1t',
     'last_name': None,
-    'first_name': None,
-    'username': 'mudak',
-    'id': -1001006147755,
-    'title': 'MDK',
-    'all_members_are_administrators': None,
-    'photo': None,
-    'description': None,
-    'invite_link': None,
-    'pinned_message': None,
-    'sticker_set_name': None,
-    'can_set_sticker_set': None
+    'language_code': 'en-UA'
   },
-  'forward_from': None,
-  'forward_date': 1540538629,
+  'forward_date': 1540648668,
   'reply_to_message': None,
   'edit_date': None,
   'media_group_id': None,
   'author_signature': None,
-  'text': None,
+  'text': 'xdrtghjio',
   'entities': None,
   'caption_entities': None,
   'audio': None,
   'document': None,
-  'photo': [
-    <telebot.types.PhotoSize
-    object
-    at
-    0x10f349470>,
-    <telebot.types.PhotoSize
-    object
-    at
-    0x10f349048>,
-    <telebot.types.PhotoSize
-    object
-    at
-    0x10f349be0>,
-    <telebot.types.PhotoSize
-    object
-    at
-    0x10f3499b0>
-  ],
+  'photo': None,
   'sticker': None,
   'video': None,
   'video_note': None,
   'voice': None,
-  'caption': 'Забота о будущем поколении',
+  'caption': None,
   'contact': None,
   'location': None,
   'venue': None,
@@ -92,9 +68,8 @@
   'invoice': None,
   'successful_payment': None,
   'connected_website': None,
-  'forward_from_message_id': 21361,
   'json': {
-    'message_id': 3903,
+    'message_id': 4248,
     'from': {
       'id': 181375634,
       'is_bot': False,
@@ -108,41 +83,15 @@
       'username': 'Korb1t',
       'type': 'private'
     },
-    'date': 1540542457,
-    'forward_from_chat': {
-      'id': -1001006147755,
-      'title': 'MDK',
-      'username': 'mudak',
-      'type': 'channel'
+    'date': 1540648668,
+    'forward_from': {
+      'id': 181375634,
+      'is_bot': False,
+      'first_name': 'Theodor II',
+      'username': 'Korb1t',
+      'language_code': 'en-UA'
     },
-    'forward_from_message_id': 21361,
-    'forward_date': 1540538629,
-    'photo': [
-      {
-        'file_id': 'AgADAgADZqkxGyO_mUpMx0fMwClOsvBM8w4ABBsqWPzq7GlRJO0BAAEC',
-        'file_size': 1292,
-        'width': 70,
-        'height': 90
-      },
-      {
-        'file_id': 'AgADAgADZqkxGyO_mUpMx0fMwClOsvBM8w4ABBh6MQ3GK-FVJe0BAAEC',
-        'file_size': 18954,
-        'width': 250,
-        'height': 320
-      },
-      {
-        'file_id': 'AgADAgADZqkxGyO_mUpMx0fMwClOsvBM8w4ABOFmyt2j6rtgJu0BAAEC',
-        'file_size': 81215,
-        'width': 624,
-        'height': 800
-      },
-      {
-        'file_id': 'AgADAgADZqkxGyO_mUpMx0fMwClOsvBM8w4ABJYZ4CPzGfz9I-0BAAEC',
-        'file_size': 116539,
-        'width': 942,
-        'height': 1208
-      }
-    ],
-    'caption': 'Забота о будущем поколении'
+    'forward_date': 1540648668,
+    'text': 'xdrtghjio'
   }
 }

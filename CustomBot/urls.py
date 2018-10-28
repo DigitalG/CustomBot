@@ -19,7 +19,7 @@ from django.contrib import admin
 from admin_panel import views
 
 urlpatterns = [
-    path(r'^$', views.index, name='index'),
+    url(r'^$', views.user_settings, name='user_settings'),
     url(r'^admin/', admin.site.urls),
     path(r'index/', views.index, name='index'),
     path(r'filters/', views.filters, name='filters'),
