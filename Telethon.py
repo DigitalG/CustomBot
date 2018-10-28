@@ -15,6 +15,10 @@ import django
 django.setup()
 from admin_panel.models import *
 
+
+while not TeleBot.objects.all().exists():
+    print('Waiting for bot token')
+    time.sleep(3)
 TOKEN = TeleBot.objects.all()[0].token
 bot = telebot.TeleBot(TOKEN)
 bot_id = bot.get_me().id

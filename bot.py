@@ -3,7 +3,6 @@ from telebot import types
 from telebot.types import Message
 import telebot
 import time
-from telethon import TelegramClient, events, sync, client
 import asyncio
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CustomBot.settings")
@@ -21,14 +20,6 @@ bot = telebot.TeleBot(TOKEN)
 bot_id = bot.get_me().id
 client_id = Session.objects.all()[0].self_id
 print('>>>Debug: Start')
-
-lines = []
-f = open('info.txt')
-lines = f.readlines()
-api_id = int(lines[0])
-api_hash = lines[1]
-client = TelegramClient('s2', api_id, api_hash)
-client.connect()
 
 
 def applyFilter(filter: Filter, str):
