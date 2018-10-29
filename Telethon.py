@@ -20,6 +20,8 @@ from admin_panel.models import *
 #TODO bigalka deletu
 #TODO titles homepage
 #TODO 404 skeleton tan4ik
+#TODO fix supergroup forward
+#TODO fix keys (don`t restart telethon)
 #TODO STRESS TEST
 #TODO STRESS TEST
 #TODO STRESS TEST
@@ -145,7 +147,7 @@ async def my_event_handler(event):
     else:
         id = event.message.to_id.channel_id
     str_to_send = event.message.text
-    print('{} send to {}'.format(str_to_send, str(id)))
+    print('{} send from {}'.format(str_to_send, str(id)))
     f = open('msg.txt', 'w')
     f.write('{}|||{}'.format(str_to_send, id))
     message = await client.forward_messages(bot_entity, event.message)

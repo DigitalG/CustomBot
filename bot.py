@@ -93,7 +93,6 @@ def handle_docs_audio(message):
     f = open('dic.txt', 'r')
     dic = parse_dictionary()
     tmp = f.read().split(';')
-    print(message)
     if message.forward_from_chat:
         key = dic[str(message.forward_from_chat.id).replace('-100', '')]
         title = message.forward_from_chat.title
