@@ -15,6 +15,22 @@ import django
 django.setup()
 from admin_panel.models import *
 
+#TODO 2FA
+#TODO css footer
+#TODO bigalka deletu
+#TODO titles homepage
+#TODO 404 skeleton tan4ik
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+#TODO STRESS TEST
+
 
 while not TeleBot.objects.all().exists():
     print('Waiting for bot token')
