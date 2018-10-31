@@ -62,16 +62,27 @@ def send_text(message: Message):
     dic = parse_dictionary()
     tmp = f.read().split(';')
     print(message)
-    if message.forward_from_chat:
-        key = dic[str(message.forward_from_chat.id).replace('-100', '')]
-        title = message.forward_from_chat.title
-    elif message.chat:
-        key = dic[str(message.chat.id).replace('-', '')]
-        title = message.chat.title
-    elif message.forward_from:
-        key = dic[str(message.forward_from.id)]
-        title = message.forward_from.username
+    # if message.forward_from_chat:
+    #     key = dic[str(message.forward_from_chat.id).replace('-100', '')]
+    #     title = message.forward_from_chat.title
+    # elif message.chat:
+    #     key = dic[str(message.chat.id).replace('-', '')]
+    #     title = message.chat.title
+    # elif message.forward_from:
+    #     key = dic[str(message.forward_from.id)]
+    #     title = message.forward_from.username
     text = message.text
+    f = open('msg.txt','r')
+    arr = []
+    arr = f.read().split(';')
+    try:
+        key = arr[0]
+        id = arr[1]
+        title = arr[2]
+    except IndexError:
+        return
+
+
     try:
         channel = Channel.objects.get(key=key)
     except Channel.DoesNotExist:

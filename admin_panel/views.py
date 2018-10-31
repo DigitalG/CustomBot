@@ -6,6 +6,25 @@ from django.contrib.auth import logout as django_logout
 import os
 
 
+# Technical functions
+def check_dictionary():
+    f = open('./channels.txt', 'r+')
+    arr = f.readlines()
+    print('check')
+    write = True
+    for c in Channel.objects.all():
+        for i in range(len(arr)):
+            arr[i] = arr[i].split(';')[0]
+            if c.key in arr[i]:
+                write = False
+                break
+        if write:
+            f.writelines([c.key + ';0\n'])
+
+    f.close()
+
+
+# Render functions
 def index(request):
     filters = Filter.objects.all()
     return render(request, 'index.html')
@@ -47,7 +66,18 @@ def channels_list(request):
 
     if request.method == 'POST':
         id = request.POST['ChannelId']
+        key = Channel.objects.get(pk=id).key
         Channel.objects.get(pk=id).delete()
+
+        f = open('./channels.txt', 'r+')
+        arr = f.readlines()
+        for i in range(len(arr)):
+            tmp = arr[i].split(';')[0]
+            if tmp != key:
+                f.write(key + ';0\n')
+
+        f.close
+        check_dictionary()
 
     return render(request, 'channels_list.html', ctx)
 
@@ -76,7 +106,12 @@ def add_channel(request):
                 if 'Check' + str(i) in request.POST:
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
 
+        f = open('./channels.txt', 'r+')
+        f.writelines([new_key + ';0'])
+        f.close
+        check_dictionary()
         channel.save()
+        return HttpResponseRedirect('/channels_list/')
 
     return render(request, 'add_channel.html', ctx)
 
@@ -114,7 +149,6 @@ def user_settings(request):
             phone_number = Session.objects.all()[0].number
             os.remove('./{}.session'.format(phone_number))
             Session.objects.all()[0].delete()
-
 
         if 'ResetToken' in request.POST:
             TeleBot.objects.all()[0].delete()
@@ -163,11 +197,24 @@ def edit_channel(request, id):
             keep = True
         else:
             keep = False
+        old_name = channel.name
         channel.name = new_name
         channel.key = new_key
         channel.forfilter = new_forfilter
         channel.KeepForwardedCaption = keep
         channel.save()
+
+        f = open('./channels.txt', 'r+')
+        arr = f.readlines()
+        for a in arr:
+            if old_name in a:
+                f.write('{};{}\n'.format(new_name, new_key))
+            else:
+                f.write(a)
+
+        check_dictionary()
+
+        f.close()
 
         return HttpResponseRedirect('/channel_details/{}'.format(id))
 

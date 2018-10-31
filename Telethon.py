@@ -73,7 +73,9 @@ to_edit = Session.objects.all()[0]
 to_edit.self_id = client.get_me().id
 to_edit.save()
 
-client.get_dialogs()
+dialogs = client.get_dialogs()
+ent = client.get_entity('DigitalG')
+# print(ent.chat.title)
 bot_entity = client.get_entity(bot_id)
 print('>>>Debug:Bot Started')
 
@@ -140,19 +142,53 @@ id = None
 str_to_send = ''
 
 
-@client.on(events.NewMessage(chats=parse_channels_names()))
+#@client.on(events.NewMessage(chats=parse_channels_names()))
+@client.on(events.NewMessage)
 async def my_event_handler(event):
-    if event.message.from_id:
-        id = event.message.from_id
-    else:
+    msg=False
+    # print(event.chat.title)
+    # print(event.chat.username)
+    try:
         id = event.message.to_id.channel_id
-    str_to_send = event.message.text
-    print('{} send from {}'.format(str_to_send, str(id)))
-    f = open('msg.txt', 'w')
-    f.write('{}|||{}'.format(str_to_send, id))
-    message = await client.forward_messages(bot_entity, event.message)
-    await asyncio.sleep(1)
-    await message.delete()
+    except AttributeError:
+        id = event.message.from_id
 
+    try:
+        title = event._chat.title
+    except AttributeError:
+        ent = await client.get_entity(id)
+        title = ent.first_name
+
+    #id = await client.get_input_entity(event.chat.username)
+    # id = id.channel_id
+    f = open('channels.txt','r')
+    tmp = f.readlines()
+    #dialogs = await client.get_dialogs()
+    for r in tmp:
+        r = r.replace('\n', '')
+        #ch = await client.get_input_entity(r)
+        ch = None
+        ch = await client.get_entity(r)
+        # print(ch)
+        ch_id = ch.id
+        if id == ch_id:
+            msg = True
+            # title = event._chat.title
+            f = open('msg.txt', 'w')
+            f.write('{};{};{}'.format(r,id,title))
+            f.close
+            print('ljsdh')
+            break
+    f.close
+    if msg:
+        message = await client.forward_messages(bot_entity, event.message)
+        await asyncio.sleep(3)
+        await message.delete()
+    # print('{} send from {}'.format(str_to_send, str(id)))
+    # f = open('msg.txt', 'w')
+    # f.write('{}|||{}'.format(str_to_send, id))
+    #print(message.stringify())
 
 client.run_until_disconnected()
+
+
