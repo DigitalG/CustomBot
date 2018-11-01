@@ -8,19 +8,22 @@ import os
 
 # Technical functions
 def check_dictionary():
-    f = open('./channels.txt', 'r+')
+    f = open('./channels.txt', 'r')
     arr = f.readlines()
-    print('check')
-    write = True
+    f.close()
+    f = open('./channels.txt', 'w')
+    lines = []
+    IsNew = True
     for c in Channel.objects.all():
         for i in range(len(arr)):
-            arr[i] = arr[i].split(';')[0]
             if c.key in arr[i]:
-                write = False
+                IsNew = False
                 break
-        if write:
-            f.writelines([c.key + ';0\n'])
-
+        if IsNew:
+            lines.append('{};0\n'.format(c.key))
+        else:
+            lines.append(arr[i])
+    f.writelines(lines)
     f.close()
 
 
@@ -69,14 +72,6 @@ def channels_list(request):
         key = Channel.objects.get(pk=id).key
         Channel.objects.get(pk=id).delete()
 
-        f = open('./channels.txt', 'r+')
-        arr = f.readlines()
-        for i in range(len(arr)):
-            tmp = arr[i].split(';')[0]
-            if tmp != key:
-                f.write(key + ';0\n')
-
-        f.close
         check_dictionary()
 
     return render(request, 'channels_list.html', ctx)
@@ -107,9 +102,10 @@ def add_channel(request):
                     channel.filters.add(Filter.objects.filter(pk=i)[0])
 
         f = open('./channels.txt', 'r+')
-        f.writelines([new_key + ';0'])
+        f.readlines()
+        f.writelines([new_key + ';0\n'])
         f.close
-        check_dictionary()
+        #check_dictionary()
         channel.save()
         return HttpResponseRedirect('/channels_list/')
 
@@ -197,22 +193,31 @@ def edit_channel(request, id):
             keep = True
         else:
             keep = False
-        old_name = channel.name
+        old_key = channel.key
         channel.name = new_name
         channel.key = new_key
         channel.forfilter = new_forfilter
         channel.KeepForwardedCaption = keep
         channel.save()
 
-        f = open('./channels.txt', 'r+')
+        f = open('./channels.txt', 'r')
+        lines = []
         arr = f.readlines()
+        f.close()
+        f = open('./channels.txt', 'w')
+        IsNew = True
         for a in arr:
-            if old_name in a:
-                f.write('{};{}\n'.format(new_name, new_key))
+            if old_key in a:
+                tmp = a.split(';')
+                IsNew = False
+                lines.append('{};{}'.format(new_key, tmp[1]))
             else:
-                f.write(a)
+                lines.append(a)
+        if IsNew:
+            lines.append('{};0\n'.format(new_key))
 
-        check_dictionary()
+        f.writelines(lines)
+        #check_dictionary()
 
         f.close()
 

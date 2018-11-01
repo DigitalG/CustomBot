@@ -58,19 +58,6 @@ def parse_dictionary():
 @bot.edited_message_handler(content_types=['text'])
 @bot.message_handler(content_types=['text'])
 def send_text(message: Message):
-    f = open('dic.txt', 'r')
-    dic = parse_dictionary()
-    tmp = f.read().split(';')
-    print(message)
-    # if message.forward_from_chat:
-    #     key = dic[str(message.forward_from_chat.id).replace('-100', '')]
-    #     title = message.forward_from_chat.title
-    # elif message.chat:
-    #     key = dic[str(message.chat.id).replace('-', '')]
-    #     title = message.chat.title
-    # elif message.forward_from:
-    #     key = dic[str(message.forward_from.id)]
-    #     title = message.forward_from.username
     text = message.text
     f = open('msg.txt','r')
     arr = []
@@ -81,7 +68,6 @@ def send_text(message: Message):
         title = arr[2]
     except IndexError:
         return
-
 
     try:
         channel = Channel.objects.get(key=key)
@@ -95,50 +81,51 @@ def send_text(message: Message):
             else:
                 text = applyFilter(fl, text)
         if channel.KeepForwardedCaption:
-            text = 'Forwarded from @{}: \n  {}'.format(title, text)
+            text = 'Forwarded from @{}: \n{}'.format(title, text)
         bot.send_message(client_id, text)
 
 
 @bot.message_handler(content_types=['photo'])
-def handle_docs_audio(message):
-    f = open('dic.txt', 'r')
-    dic = parse_dictionary()
-    tmp = f.read().split(';')
-    if message.forward_from_chat:
-        key = dic[str(message.forward_from_chat.id).replace('-100', '')]
-        title = message.forward_from_chat.title
-    elif message.chat:
-        key = dic[str(message.chat.id).replace('-', '')]
-        title = message.chat.title
-    elif message.forward_from:
-        key = dic[str(message.forward_from.id)]
-        title = message.forward_from.username
-    text = message.text
+def handle_photo(message):
+    f = open('msg.txt','r')
+    arr = []
+    arr = f.read().split(';')
+    try:
+        key = arr[0]
+        id = arr[1]
+        title = arr[2]
+    except IndexError:
+        return
+
     try:
         channel = Channel.objects.get(key=key)
     except Channel.DoesNotExist:
         return
-
-    caption = ''
-    part = ''
     try:
         if message.json['caption']:
-            part = message.json['caption']
+            text = message.json['caption']
     except KeyError:
-        part = ''
+        text = ''
+
+    for fl in channel.filters.all():
+        if fl.type == 'Get messages only from {Input} username':
+            if message.from_user.username != fl.input:
+                return
+        else:
+            text = applyFilter(fl, text)
+    if channel.KeepForwardedCaption:
+        caption = '{}\n\nForwarded from {}'.format(text, title)
+
     if channel.forfilter == 'Only Images':
         caption = ''
         bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
     if channel.forfilter == 'Only messages that include an image':
-        caption = 'Forwarded from {}\n\n{}'.format(title, part)
         bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
     if channel.forfilter == 'Only Text':
         bot.send_message(client_id, caption)
     if channel.forfilter == 'Only messages that include an text' and message.json['caption']:
-        caption = 'Forwarded from {}\n\n{}'.format(title, part)
         bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
     if channel.forfilter == 'Everything':
-        caption = 'Forwarded from {}\n\n{}'.format(title, part)
         bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
 
 
