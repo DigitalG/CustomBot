@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="container">
+    <div class="col-3"></div>
+    <div>
+        <h1>Add new admin channel</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group" id="form">
+                <label for="Name">Name</label>
+                <input type="text" name="Name" class="form-control" id="Name" placeholder="Enter channel name" required>
+                <br>
+                <label for="Key">Key</label>
+                <input type="text" name="Key" class="form-control" id="Key" placeholder="Key">
+                <small class="text-muted"> - It can be username, group name, id, invite link, etc.</small>
+                <br>
+                <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton1" name="SubmitToIndex">Submit
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col-3"></div>
+</div>
+{% include "footer.html" %}
+</body>
+</html>

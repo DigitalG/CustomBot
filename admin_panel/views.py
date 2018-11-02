@@ -105,7 +105,7 @@ def add_channel(request):
         f.readlines()
         f.writelines([new_key + ';0\n'])
         f.close
-        #check_dictionary()
+        # check_dictionary()
         channel.save()
         return HttpResponseRedirect('/channels_list/')
 
@@ -217,7 +217,7 @@ def edit_channel(request, id):
             lines.append('{};0\n'.format(new_key))
 
         f.writelines(lines)
-        #check_dictionary()
+        # check_dictionary()
 
         f.close()
 
@@ -281,3 +281,57 @@ def tele_login(request):
             return render(request, 'tele_login.html', ctx)
 
     return render(request, 'tele_login.html', ctx)
+
+
+def admin_channels(request):
+    channels = AdminChannel.objects.all()
+    ctx = {'channels': channels}
+
+    if request.method == 'POST':
+        id = request.POST['ChannelId']
+        key = AdminChannel.objects.get(pk=id).key
+        AdminChannel.objects.get(pk=id).delete()
+
+    return render(request, 'admin_channels.html', ctx)
+
+
+def add_admin(request):
+    channel = AdminChannel.objects.all()
+    ctx = {'channel': channel}
+
+    if request.method == 'POST':
+        new_name = request.POST['Name']
+        new_key = request.POST['Key']
+
+        channel = AdminChannel.objects.create(name=new_name,
+                                              key=new_key)
+
+        return HttpResponseRedirect('/admin_channels/')
+
+    return render(request, 'add_admin.html', ctx)
+
+
+def admin_details(request, id):
+    channel = AdminChannel.objects.all()
+    ctx = {'channel': channel}
+
+    return render(request, 'channel_details.html', ctx)
+
+
+def edit_admin(request, id):
+    channel = AdminChannel.objects.all(id)[0]
+    ctx = {'name': channel.name,
+           'key': channel.key,
+           'channel': channel}
+    new_name = request.POST['Name']
+    new_key = request.POST['Key']
+    old_key = channel.key
+    channel.name = new_name
+    channel.key = new_key
+    channel.save()
+
+
+
+
+    return HttpResponseRedirect('/admin_details/{}'.format(id))
+    return render(request, 'edit_admin.html', ctx)

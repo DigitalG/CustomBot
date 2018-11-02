@@ -12,18 +12,29 @@ class Filter(models.Model):
         db_table = 'Filter'
 
     def __str__(self):
-        return ( self.name)
+        return (self.name)
 
 
 class Channel(models.Model):
     name = models.CharField(max_length=255)
     key = models.CharField(max_length=255)
-    forfilter = models.CharField(max_length=255,default='')
+    forfilter = models.CharField(max_length=255, default='')
     filters = models.ManyToManyField(Filter)
-    KeepForwardedCaption=models.BooleanField(default=True)
+    KeepForwardedCaption = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'Channel'
+
+    def __str__(self):
+        return (self.name)
+
+
+class AdminChannel(models.Model):
+    name = models.CharField(max_length=255)
+    key = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'Admin Channel'
 
     def __str__(self):
         return (self.name)
@@ -40,6 +51,7 @@ class Session(models.Model):
 
     def __str__(self):
         return (self.name)
+
 
 class TeleBot(models.Model):
     token = models.CharField(max_length=255)

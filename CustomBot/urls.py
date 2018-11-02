@@ -31,5 +31,9 @@ urlpatterns = [
     path(r'user_settings/', views.user_settings, name='user_settings'),
     path(r'channel_details/<int:id>/', views.channel_details, name='channel_details'),
     path(r'edit_channel/<int:id>', views.edit_channel, name='edit_channel'),
-    path(r'tele_log/', views.tele_login, name='tele_login')
+    path(r'tele_log/', views.tele_login, name='tele_login'),
+    path(r'admin_channels/', views.admin_channels, name='admin_channels'),
+    path(r'add_admin/', views.add_admin, name='add_admin'),
+    path(r'admin_details/<int:id>', views.admin_details, name='admin_details'),
+    path(r'edit_admin/<int:id>', views.edit_admin, name='edit_admin')
 ]
