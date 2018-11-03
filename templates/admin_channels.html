@@ -15,7 +15,6 @@
     <div class="">
         <h1>Admin channels</h1><a href="/add_admin/" class="btn btn-dark mb-2">Add new admin channel</a>
         <br>
-        <small class="text-muted">*You can click on channel names to view details or edit them</small>
         <table class="table table-stripped table-hover">
             <tr class="bg-dark text-white">
                 <th class="">Name</th>
@@ -23,7 +22,7 @@
             </tr>
             {% for f in channels %}
                 <tr class="td-hl">
-                    <td class="" onclick="document.location = '/admin_details/{{ f.id }}'">{{ f.name }}</td>
+                    <td class="">{{ f.name }}</td>
                     <td class="">
                         <button id="DeleteButton{{ f.id }}" onclick="OnDelete({{ f.id }})" class="btn btn-warning">
                             Delete

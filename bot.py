@@ -26,6 +26,15 @@ bot_id = bot.get_me().id
 print('>>>Debug: Start')
 
 
+def get_ids():
+    f = open('admins.txt','r')
+    lines = f.readlines()
+    res = []
+    for l in lines:
+        res.append(int(l.replace('\n','').split(';')[1]))
+    return res
+
+
 def applyFilter(filter: Filter, str):
     if filter.type == 'Replace':
         result = str.replace(filter.input.lower(), filter.output)
@@ -82,7 +91,8 @@ def send_text(message: Message):
                 text = applyFilter(fl, text)
         if channel.KeepForwardedCaption:
             text = 'Forwarded from @{}: \n{}'.format(title, text)
-        bot.send_message(client_id, text)
+        for id in get_ids():
+            bot.send_message(id, text)
 
 
 @bot.message_handler(content_types=['photo'])
@@ -116,32 +126,36 @@ def handle_photo(message):
     if channel.KeepForwardedCaption:
         caption = '{}\n\nForwarded from {}'.format(text, title)
 
-    if channel.forfilter == 'Only Images':
-        caption = ''
-        bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
-    if channel.forfilter == 'Only messages that include an image':
-        bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
-    if channel.forfilter == 'Only Text':
-        bot.send_message(client_id, caption)
-    if channel.forfilter == 'Only messages that include an text' and message.json['caption']:
-        bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
-    if channel.forfilter == 'Everything':
-        bot.send_photo(client_id, message.json['photo'][0]['file_id'], caption=caption)
+    for id in get_ids():
+        if channel.forfilter == 'Only Images':
+            caption = ''
+            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
+        if channel.forfilter == 'Only messages that include an image':
+            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
+        if channel.forfilter == 'Only Text':
+            bot.send_message(id, caption)
+        if channel.forfilter == 'Only messages that include an text' and message.json['caption']:
+            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
+        if channel.forfilter == 'Everything':
+            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
 
 
 @bot.message_handler(content_types=['video'])
 def handle_docs_video(message):
-    bot.send_video(client_id, message.json['video']['file_id'], caption=message.json['caption'])
+    for id in get_ids():
+        bot.send_video(id, message.json['video']['file_id'], caption=message.json['caption'])
 
 
 @bot.message_handler(content_types=['audio'])
 def handle_docs_video(message):
-    bot.send_audio(client_id, message.json['audio']['file_id'])
+    for id in get_ids():
+        bot.send_audio(id, message.json['audio']['file_id'])
 
 
 @bot.message_handler(content_types=['document'])
 def handle_docs_video(message):
-    bot.send_document(client_id, message.json['document']['file_id'])
+    for id in get_ids():
+        bot.send_document(id, message.json['document']['file_id'])
 
 
 bot.polling()

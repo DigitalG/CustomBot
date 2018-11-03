@@ -6,7 +6,6 @@ import os
 from telebot import types
 from telebot.types import Message
 import telebot
-import asgiref
 import time
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CustomBot.settings")
@@ -90,15 +89,15 @@ def applyFilter(str, filter):
     return result
 
 
-def dic_check(key):
-    f = open('dic.txt', 'r+')
-    tmp = f.readlines()
-    for r in tmp:
-        str = r.split(';')
-        dic[str[0]] = str[1]
-    if key not in dic:
-        dic[key] = client.get_entity(key).id
-        f.write('{};{}'.format(key, client.get_entity(key)))
+# def dic_check(key):
+#     f = open('dic.txt', 'r+')
+#     tmp = f.readlines()
+#     for r in tmp:
+#         str = r.split(';')
+#         dic[str[0]] = str[1]
+#     if key not in dic:
+#         dic[key] = client.get_entity(key).id
+#         f.write('{};{}'.format(key, client.get_entity(key)))
 
 
 def parse_channels():
@@ -127,13 +126,13 @@ def parse_channels_names():
     return res
 
 
-def prepare_message(str, id):
-    return applyFilter(str, id)
-
-
-def get_filters(id):
-    id = str(id)
-    return Channel.objects.filter(key=create_dictionary()[str(id)])[0].filters.all()
+# def prepare_message(str, id):
+#     return applyFilter(str, id)
+#
+#
+# def get_filters(id):
+#     id = str(id)
+#     return Channel.objects.filter(key=create_dictionary()[str(id)])[0].filters.all()
 
 
 id = None
@@ -172,6 +171,26 @@ async def my_event_handler(event):
     f = open('channels.txt','r')
     channels = f.readlines()
     f.close()
+
+    #Admins check
+    f = open('admins.txt','r')
+    chan = f.readlines()
+    f.close()
+    lines=[]
+    IsNew = False
+    for r in chan:
+        tmp = r.replace('\n','').split(';')
+        if tmp[1] == '0':
+            ch = await client.get_entity(tmp[0])
+            tmp[1] = ch.id
+            IsNew = True
+            lines.append('{};{}\n'.format(tmp[0],tmp[1]))
+        else:
+            lines.append(r)
+    if IsNew:
+        f = open('admins.txt', 'w')
+        f.writelines(lines)
+        f.close()
     #-------
     for ch in channels:
        if str(id) in ch:

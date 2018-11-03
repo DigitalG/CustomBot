@@ -27,6 +27,26 @@ def check_dictionary():
     f.close()
 
 
+def check_admins():
+    f = open('./admins.txt', 'r')
+    arr = f.readlines()
+    f.close()
+    f = open('./admins.txt', 'w')
+    lines = []
+    IsNew = True
+    for c in Channel.objects.all():
+        for i in range(len(arr)):
+            if c.key in arr[i]:
+                IsNew = False
+                break
+        if IsNew:
+            lines.append('{};0\n'.format(c.key))
+        else:
+            lines.append(arr[i])
+    f.writelines(lines)
+    f.close()
+
+
 # Render functions
 def index(request):
     filters = Filter.objects.all()
@@ -292,6 +312,8 @@ def admin_channels(request):
         key = AdminChannel.objects.get(pk=id).key
         AdminChannel.objects.get(pk=id).delete()
 
+        check_admins()
+
     return render(request, 'admin_channels.html', ctx)
 
 
@@ -305,6 +327,11 @@ def add_admin(request):
 
         channel = AdminChannel.objects.create(name=new_name,
                                               key=new_key)
+
+        f = open('./admins.txt', 'r+')
+        f.readlines()
+        f.writelines([new_key + ';0\n'])
+        f.close
 
         return HttpResponseRedirect('/admin_channels/')
 
