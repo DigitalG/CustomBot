@@ -31,7 +31,7 @@ def get_ids():
     lines = f.readlines()
     res = []
     for l in lines:
-        res.append(int(l.replace('\n','').split(';')[1]))
+        res.append(l.replace('\n','').split(';')[1])
     return res
 
 
@@ -68,7 +68,14 @@ def parse_dictionary():
 @bot.message_handler(content_types=['text'])
 def send_text(message: Message):
     text = message.text
-    f = open('msg.txt','r')
+    a = message.forward_from
+    print(a)
+    try:
+        if a.id == bot_id:
+            return
+    except AttributeError:
+        pass
+    f = open('msg.txt', 'r')
     arr = []
     arr = f.read().split(';')
     try:
@@ -92,12 +99,24 @@ def send_text(message: Message):
         if channel.KeepForwardedCaption:
             text = 'Forwarded from @{}: \n{}'.format(title, text)
         for id in get_ids():
-            bot.send_message(id, text)
+            try:
+                bot.send_message(int(id), text)
+            except telebot.apihelper.ApiException:
+                try:
+                    bot.send_message(int('-' + id), text)
+                except telebot.apihelper.ApiException:
+                    bot.send_message(int('-100' + id), text)
 
 
 @bot.message_handler(content_types=['photo'])
 def handle_photo(message):
-    f = open('msg.txt','r')
+    a = message.forward_from
+    try:
+        if a.id == bot_id:
+            return
+    except AttributeError:
+        pass
+    f = open('msg.txt', 'r')
     arr = []
     arr = f.read().split(';')
     try:
@@ -125,19 +144,32 @@ def handle_photo(message):
             text = applyFilter(fl, text)
     if channel.KeepForwardedCaption:
         caption = '{}\n\nForwarded from {}'.format(text, title)
+    else:
+        caption = text
 
     for id in get_ids():
         if channel.forfilter == 'Only Images':
             caption = ''
-            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
-        if channel.forfilter == 'Only messages that include an image':
-            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
+
+        if channel.forfilter == 'Only Images' or channel.forfilter == 'Only messages that include an image' or channel.forfilter == 'Everything' or (channel.forfilter == 'Only messages that include an text' and message.json['caption']):
+            for id in get_ids():
+                try:
+                    bot.send_photo(int(id), message.json['photo'][0]['file_id'], caption=caption)
+                except telebot.apihelper.ApiException:
+                    try:
+                        bot.send_photo(int('-' + id), message.json['photo'][0]['file_id'], caption=caption)
+                    except telebot.apihelper.ApiException:
+                        bot.send_photo(int('-100' + id), message.json['photo'][0]['file_id'], caption=caption)
+
         if channel.forfilter == 'Only Text':
-            bot.send_message(id, caption)
-        if channel.forfilter == 'Only messages that include an text' and message.json['caption']:
-            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
-        if channel.forfilter == 'Everything':
-            bot.send_photo(id, message.json['photo'][0]['file_id'], caption=caption)
+            for id in get_ids():
+                try:
+                    bot.send_message(int(id), caption)
+                except telebot.apihelper.ApiException:
+                    try:
+                        bot.send_message(int('-' + id), caption)
+                    except telebot.apihelper.ApiException:
+                        bot.send_message(int('-100' + id), caption)
 
 
 @bot.message_handler(content_types=['video'])
