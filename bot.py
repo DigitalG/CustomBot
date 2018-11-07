@@ -104,7 +104,7 @@ def send_text(message: Message):
                 try:
                     bot.send_message(int('-' + id), text)
                 except telebot.apihelper.ApiException:
-                    bot.send_message(int('-100' + id), text)
+                    bot.send_message(int(id), text)
 
 
 @bot.message_handler(content_types=['photo'])
