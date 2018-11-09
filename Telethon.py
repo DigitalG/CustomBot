@@ -126,15 +126,6 @@ def parse_channels_names():
     return res
 
 
-# def prepare_message(str, id):
-#     return applyFilter(str, id)
-#
-#
-# def get_filters(id):
-#     id = str(id)
-#     return Channel.objects.filter(key=create_dictionary()[str(id)])[0].filters.all()
-
-
 id = None
 str_to_send = ''
 
@@ -176,7 +167,7 @@ async def my_event_handler(event):
     f = open('admins.txt','r')
     chan = f.readlines()
     f.close()
-    lines=[]
+    lin=[]
     IsNew = False
     for r in chan:
         tmp = r.replace('\n','').split(';')
@@ -184,12 +175,12 @@ async def my_event_handler(event):
             ch = await client.get_entity(tmp[0])
             tmp[1] = ch.id
             IsNew = True
-            lines.append('{};{}\n'.format(tmp[0],tmp[1]))
+            lin.append('{};{}\n'.format(tmp[0],tmp[1]))
         else:
-            lines.append(r)
+            lin.append(r)
     if IsNew:
         f = open('admins.txt', 'w')
-        f.writelines(lines)
+        f.writelines(lin)
         f.close()
     #-------
     for ch in channels:
