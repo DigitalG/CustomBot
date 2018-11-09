@@ -40,7 +40,7 @@ def applyFilter(filter: Filter, str):
         result = str.replace(filter.input, filter.output)
         result = result.replace(filter.input.upper(), filter.output)
     elif filter.type == 'Add Below':
-        result = str + '\n' + filter.input
+        result = str + '\n\n' + filter.input
     elif filter.type == 'Remove':
         result = str.replace(filter.input, '')
         result = result.replace(filter.input.upper(), '')
