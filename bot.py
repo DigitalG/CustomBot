@@ -189,9 +189,5 @@ def handle_docs_video(message):
         bot.send_document(id, message.json['document']['file_id'])
 
 
-try:
-    bot.polling(none_stop=True)
-except Exception as err:
-    logging.error(err)
-    time.sleep(5)
-    print('Internet error!')
+
+bot.polling(none_stop=True)
