@@ -190,4 +190,4 @@ def handle_docs_video(message):
 
 
 
-bot.polling(none_stop=True)
+bot.infinity_polling()
