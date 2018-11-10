@@ -68,7 +68,6 @@ def parse_dictionary():
 def send_text(message: Message):
     text = message.text
     a = message.forward_from
-    print(a)
     try:
         if a.id == bot_id:
             return
@@ -195,5 +194,4 @@ try:
 except Exception as err:
     logging.error(err)
     time.sleep(5)
-    print
-    "Internet error!"
+    print('Internet error!')
