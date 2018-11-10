@@ -27,11 +27,11 @@ print('>>>Debug: Start')
 
 
 def get_ids():
-    f = open('admins.txt','r')
+    f = open('admins.txt', 'r')
     lines = f.readlines()
     res = []
     for l in lines:
-        res.append(l.replace('\n','').split(';')[1])
+        res.append(l.replace('\n', '').split(';')[1])
     return res
 
 
@@ -150,7 +150,8 @@ def handle_photo(message):
         if channel.forfilter == 'Only Images':
             caption = ''
 
-        if channel.forfilter == 'Only Images' or channel.forfilter == 'Only messages that include an image' or channel.forfilter == 'Everything' or (channel.forfilter == 'Only messages that include an text' and message.json['caption']):
+        if channel.forfilter == 'Only Images' or channel.forfilter == 'Only messages that include an image' or channel.forfilter == 'Everything' or (
+                channel.forfilter == 'Only messages that include an text' and message.json['caption']):
             for id in get_ids():
                 try:
                     bot.send_photo(int(id), message.json['photo'][0]['file_id'], caption=caption)
@@ -189,9 +190,10 @@ def handle_docs_video(message):
         bot.send_document(id, message.json['document']['file_id'])
 
 
- try:
-            bot.polling(none_stop=True)
-    except Exception as err:
-            logging.error(err)
-            time.sleep(5)
-            print "Internet error!"`
+try:
+    bot.polling(none_stop=True)
+except Exception as err:
+    logging.error(err)
+    time.sleep(5)
+    print
+    "Internet error!"
