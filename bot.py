@@ -37,8 +37,8 @@ def get_ids():
 
 def applyFilter(filter: Filter, str):
     if filter.type == 'Replace':
-        result = str.replace(' {}'.format(filter.input), filter.output)
-        result = result.replace(' {}'.format(filter.input.upper()), filter.output)
+        result = str.replace(' {}'.format(filter.input), ' {}'.format(filter.output))
+        result = result.replace(' {}'.format(filter.input.upper()), ' {}'.format(filter.output))
     elif filter.type == 'Add Below':
         result = str + '\n\n' + filter.input
     elif filter.type == 'Remove':
